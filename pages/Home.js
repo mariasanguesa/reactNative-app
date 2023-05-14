@@ -1,9 +1,34 @@
 import { Text, StyleSheet } from 'react-native';
-import { useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { VStack, Input, Icon, Stack, Center, NativeBaseProvider, HStack } from "native-base";
 import { MaterialIcons } from "@expo/vector-icons";
+import RestaurantesContext from '../contextos/RestaurantesContext';
+import axios from "axios";
 
 const Home = () => {
+
+    const { restaurantes, setRestaurantes } = useContext(RestaurantesContext);
+
+    useEffect(() => {
+        axios.get('https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/Restaurantes.json')
+            .then((response) => {
+                let arrayRestaurantes = [];
+                for (let id in response.data) {
+                    arrayRestaurantes.push({
+                        id: id,
+                        nombre: response.data[id].nombre,
+                        foto: response.data[id].src,
+                    })
+                }
+                setRestaurantes(arrayRestaurantes);
+            }
+            ).catch(
+                (error) => {
+                }
+            ) 
+    }, []);
+    
+    console.log(restaurantes);
 
     const [busqueda, setBusqueda] = useState("");
 
