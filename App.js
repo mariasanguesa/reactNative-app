@@ -3,11 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from './pages/Home';
-import React, { useState, useEffect } from 'react';
 import { RestaurantesProvider } from './contextos/RestaurantesContext';
 
 const App = () => {
-
 
   const HomeScreen = () => {
     return (
@@ -37,7 +35,7 @@ const App = () => {
 
   return (
     <RestaurantesProvider>
-       <NavigationContainer>
+      <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ focused, color, size }) => {
@@ -59,12 +57,12 @@ const App = () => {
           <Tab.Screen name="Reservas" component={ReservasScreen} />
           <Tab.Screen name="Perfil" component={PerfilScreen} />
         </Tab.Navigator>
-      </NavigationContainer> 
+      </NavigationContainer>
     </RestaurantesProvider>
   )
 }
 
- const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
@@ -72,9 +70,10 @@ const App = () => {
     justifyContent: 'center',
   },
   homePage: {
+    backgroundColor: 'white',
     flex: 1,
     alignItems: 'center'
   }
-}); 
+});
 
 export default App;
