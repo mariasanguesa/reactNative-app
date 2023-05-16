@@ -1,9 +1,11 @@
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Button } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from './pages/Home';
 import { RestaurantesProvider } from './contextos/RestaurantesContext';
+import {  useContext} from 'react';
+import { ModoContext, ModoProvider } from './contextos/ModoContext';
 
 const App = () => {
 
@@ -24,9 +26,16 @@ const App = () => {
   }
 
   const PerfilScreen = () => {
+
+    const { modoOscuro, toggleModoOscuro } = useContext(ModoContext);
+
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Text>Tu cuenta</Text>
+      <View style={[styles.container, modoOscuro && styles.containerModoOscuro]}>
+        <Text style={[styles.texto, modoOscuro && styles.textoModoOscuro]}>perfil</Text>
+        <Button
+          title={modoOscuro ? 'Modo Claro' : 'Modo Oscuro'}
+          onPress={toggleModoOscuro}
+        />
       </View>
     );
   }
@@ -35,38 +44,41 @@ const App = () => {
 
   return (
     <RestaurantesProvider>
-      <NavigationContainer>
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            headerShown: false,
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
-              if (route.name === 'Home') {
-                iconName = focused ? 'home' : 'home-outline';
-              } else if (route.name === 'Reservas') {
-                iconName = focused ? 'book' : 'book-outline';
-              } else if (route.name === 'Perfil') {
-                iconName = focused ? 'person-circle' : 'person-circle-outline';
-              }
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-            tabBarActiveTintColor: 'gray',
-            tabBarInactiveTintColor: 'gray',
-          })}
-        >
-          <Tab.Screen name="Home" component={HomeScreen} />
-          <Tab.Screen name="Reservas" component={ReservasScreen} />
-          <Tab.Screen name="Perfil" component={PerfilScreen} />
-        </Tab.Navigator>
-      </NavigationContainer>
+      <ModoProvider>
+        <NavigationContainer>
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              headerShown: false,
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
+                if (route.name === 'Home') {
+                  iconName = focused ? 'home' : 'home-outline';
+                } else if (route.name === 'Reservas') {
+                  iconName = focused ? 'book' : 'book-outline';
+                } else if (route.name === 'Perfil') {
+                  iconName = focused ? 'person-circle' : 'person-circle-outline';
+                }
+                return <Ionicons name={iconName} size={size} color={color} />;
+              },
+              tabBarActiveTintColor: 'gray',
+              tabBarInactiveTintColor: 'gray',
+            })}
+          >
+            <Tab.Screen name="Home" component={HomeScreen} />
+            <Tab.Screen name="Reservas" component={ReservasScreen} />
+            <Tab.Screen name="Perfil" component={PerfilScreen} />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </ModoProvider>
     </RestaurantesProvider>
   )
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white', // Estilo claro por defecto
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -74,7 +86,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flex: 1,
     alignItems: 'center'
-  }
+  },
+  containerModoOscuro: {
+    backgroundColor: 'black',
+  },
+  texto: {
+    color: 'black', // Color de texto claro por defecto
+  },
+  textoModoOscuro: {
+    color: 'white', // Color de texto en modo oscuro
+  },
 });
 
 export default App;
