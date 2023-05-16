@@ -1,13 +1,11 @@
-import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
-import { useEffect, useState, useContext } from 'react';
-import { VStack, Input, Icon, Stack, Center, NativeBaseProvider, HStack } from "native-base";
+import React, { useEffect, useState, useContext } from 'react';
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TextInput } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
-import RestaurantesContext from '../contextos/RestaurantesContext';
 import axios from "axios";
+import RestaurantesContext from '../contextos/RestaurantesContext';
 import ProductoHome from "../componentes/homeComponent";
 
 const Home = () => {
-
     const { restaurantes, setRestaurantes } = useContext(RestaurantesContext);
 
     useEffect(() => {
@@ -44,15 +42,13 @@ const Home = () => {
 
     if (productosFiltrados.length > 0) {
         contenido = (
-            <VStack space={3} alignItems="center">
+            <ScrollView>
                 {productosFiltrados.map((elemento) => (
-                    <HStack space={3} justifyContent="center" key={elemento.id}>
-                        <Center h={80} w={375} rounded="md" shadow={3}>
-                            <ProductoHome nombre={elemento.nombre} src={elemento.foto} />
-                        </Center>
-                    </HStack>
+                    <View key={elemento.id} style={styles.card}>
+                        <ProductoHome nombre={elemento.nombre} src={elemento.foto} />
+                    </View>
                 ))}
-            </VStack>
+            </ScrollView>
         );
     } else {
         if (busqueda) {
@@ -64,15 +60,13 @@ const Home = () => {
         } else {
             if (restaurantes.length > 0) {
                 contenido = (
-                    <VStack space={3} alignItems="center">
+                    <ScrollView>
                         {restaurantes.map((elemento) => (
-                            <HStack space={3} justifyContent="center" key={elemento.id}>
-                                <Center h={80} w={375} rounded="md" shadow={3}>
-                                    <ProductoHome nombre={elemento.nombre} src={elemento.foto} />
-                                </Center>
-                            </HStack>
+                            <View key={elemento.id} style={styles.card}>
+                                <ProductoHome nombre={elemento.nombre} src={elemento.foto} />
+                            </View>
                         ))}
-                    </VStack>
+                    </ScrollView>
                 );
             }
         }
@@ -80,48 +74,70 @@ const Home = () => {
 
     return (
         <SafeAreaView>
-            <NativeBaseProvider>
-                <VStack space={5} alignItems="center">
-                    <Center>
-                        <Text style={styles.title}>Restaurantes disponibles</Text>
-                    </Center>
-                    <Center flex={1} px="3" py="2">
-                        <Stack space={4} w="100%" alignItems="center">
-                            <Input
-                                w={{
-                                    base: "100%",
-                                    md: "100%"
-                                }}
-                                InputLeftElement={<Icon as={<MaterialIcons name="search" />} size={5} ml="2" color="muted.400" />}
-                                value={busqueda}
-                                placeholder="Búsqueda por restaurante"
-                                onChangeText={handleChange}
-                            />
-                        </Stack>
-                    </Center>
-                    <Center>
-                    <ScrollView style={{ flex: 1,height: "100%" }}>
-                            {contenido}
-                        </ScrollView>
-                    </Center>
-                </VStack>
-            </NativeBaseProvider>
+            <View style={styles.container}>
+                <Text style={styles.title}>Restaurantes disponibles</Text>
+                <View style={styles.searchContainer}>
+                    <MaterialIcons name="search" style={styles.searchIcon} />
+                    <TextInput
+                        style={styles.input}
+                        value={busqueda}
+                        placeholder="Búsqueda por restaurante"
+                        onChangeText={handleChange}
+                    />
+                </View>
+                {contenido}
+            </View>
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingHorizontal: 16,
+        paddingTop: 20,
+    },
     title: {
         fontSize: 20,
         textAlign: "center",
-        marginTop: 20
+        marginBottom: 10,
+    },
+    searchContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 5,
+        paddingHorizontal: 10,
+        marginBottom: 10,
+    },
+    searchIcon: {
+        fontSize: 24,
+        marginRight: 10,
+    },
+    input: {
+        flex: 1,
+    },
+    card: {
+        padding: 10,
+        marginVertical: 10,
+        backgroundColor: "#fff",
+        borderRadius: 5,
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
     },
     noCoincidenciasText: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 50
-    }
+        marginTop: 50,
+    },
 });
 
 export default Home;
