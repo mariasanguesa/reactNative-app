@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     input: {
-        flex: 1,
+        flex: 2,
     },
     card: {
         padding: 10,

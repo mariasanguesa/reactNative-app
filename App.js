@@ -38,6 +38,7 @@ const App = () => {
       <NavigationContainer>
         <Tab.Navigator
           screenOptions={({ route }) => ({
+            headerShown: false,
             tabBarIcon: ({ focused, color, size }) => {
               let iconName;
               if (route.name === 'Home') {
@@ -49,7 +50,7 @@ const App = () => {
               }
               return <Ionicons name={iconName} size={size} color={color} />;
             },
-            tabBarActiveTintColor: 'green',
+            tabBarActiveTintColor: 'gray',
             tabBarInactiveTintColor: 'gray',
           })}
         >
