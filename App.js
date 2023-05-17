@@ -4,9 +4,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from './pages/Home';
 import { RestaurantesProvider } from './contextos/RestaurantesContext';
-import { useContext } from 'react';
-import { ModoContext, ModoProvider } from './contextos/ModoContext';
-import { Button } from 'react-native-elements';
+import { ModoProvider } from './contextos/ModoContext';
+import Perfil from './pages/Perfil';
 
 const App = () => {
 
@@ -27,21 +26,8 @@ const App = () => {
   }
 
   const PerfilScreen = () => {
-
-    const { modoOscuro, toggleModoOscuro } = useContext(ModoContext);
-
-    return (
-      <View style={[styles.container, modoOscuro && styles.containerModoOscuro]}>
-        <View style={styles.rowContainer}>
-          <Text style={[styles.texto, modoOscuro && styles.textoModoOscuro]}>Modo oscuro </Text>
-          <Switch
-            value={modoOscuro}
-            onValueChange={toggleModoOscuro}
-            thumbColor={modoOscuro ? 'white' : 'black'}
-            trackColor={{ false: 'gray', true: 'gray' }}
-          />
-        </View>
-      </View>
+    return(
+        <Perfil/>
     );
   }
 
