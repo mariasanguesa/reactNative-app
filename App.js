@@ -1,11 +1,12 @@
-import { StyleSheet, View, Text, Button } from 'react-native';
+import { StyleSheet, View, Text, Switch } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Home from './pages/Home';
 import { RestaurantesProvider } from './contextos/RestaurantesContext';
-import {  useContext} from 'react';
+import { useContext } from 'react';
 import { ModoContext, ModoProvider } from './contextos/ModoContext';
+import { Button } from 'react-native-elements';
 
 const App = () => {
 
@@ -31,11 +32,15 @@ const App = () => {
 
     return (
       <View style={[styles.container, modoOscuro && styles.containerModoOscuro]}>
-        <Text style={[styles.texto, modoOscuro && styles.textoModoOscuro]}>perfil</Text>
-        <Button
-          title={modoOscuro ? 'Modo Claro' : 'Modo Oscuro'}
-          onPress={toggleModoOscuro}
-        />
+        <View style={styles.rowContainer}>
+          <Text style={[styles.texto, modoOscuro && styles.textoModoOscuro]}>Modo oscuro </Text>
+          <Switch
+            value={modoOscuro}
+            onValueChange={toggleModoOscuro}
+            thumbColor={modoOscuro ? 'white' : 'black'}
+            trackColor={{ false: 'gray', true: 'gray' }}
+          />
+        </View>
       </View>
     );
   }
@@ -95,6 +100,10 @@ const styles = StyleSheet.create({
   },
   textoModoOscuro: {
     color: 'white', // Color de texto en modo oscuro
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });
 
