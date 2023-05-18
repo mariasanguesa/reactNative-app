@@ -7,6 +7,7 @@ import ProductoHome from "../componentes/homeComponent";
 import { ModoContext } from '../contextos/ModoContext';
 
 const Home = () => {
+  // El contexto de restaurantes está creado para que se pueda acceder a el desde cualquier punto de la aplicación habiendo hecho solo una llamada a la base de datos
   const { restaurantes, setRestaurantes } = useContext(RestaurantesContext);
   const { modoOscuro } = useContext(ModoContext);
 
