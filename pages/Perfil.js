@@ -2,7 +2,7 @@ import { ModoContext } from '../contextos/ModoContext';
 import { useContext, useState } from 'react';
 import { StyleSheet, View, Text, Switch, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import axios from 'axios';
-import { AutContext } from '../contextos/AutContext';
+import AutContext from '../contextos/AutContext';
 
 const Perfil = () => {
 
@@ -11,10 +11,8 @@ const Perfil = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const {autenticacion, setAutenticacion} = useContext(AutContext);
     // Para que las credenciales sean accesibles en todos los componentes se almacenan en un contexto. Que con el login se modificará
-    //const { autenticacion, setAutenticacion } = useContext(AutContext);
-    //console.log(autenticacion);
+    const { autenticacion, setAutenticacion } = useContext(AutContext);
 
     const handleLogin = () => {
         const authData = {
@@ -26,9 +24,7 @@ const Perfil = () => {
 
         axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAz2len4LT2BmdNFZEQqzUF1j3hB-xtUsw', authData)
             .then((response) => {
-                console.log(response.data);
                 setAutenticacion(response.data);
-                console.log(autenticacion);
             })
             .catch((error) => {
                 alert('El usuario o contraseña no son correctos.');
