@@ -12,7 +12,7 @@ const Perfil = () => {
     const [password, setPassword] = useState('');
 
     // Para que las credenciales sean accesibles en todos los componentes se almacenan en un contexto. Que con el login se modificará
-    const { autenticacion, setAutenticacion } = useContext(AutContext);
+    const { autenticacion, actualizarSesion, cerrarSesion } = useContext(AutContext);
 
     const handleLogin = () => {
         const authData = {
@@ -24,7 +24,7 @@ const Perfil = () => {
 
         axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAz2len4LT2BmdNFZEQqzUF1j3hB-xtUsw', authData)
             .then((response) => {
-                setAutenticacion(response.data);
+                actualizarSesion(response.data);
             })
             .catch((error) => {
                 alert('El usuario o contraseña no son correctos.');
@@ -33,32 +33,54 @@ const Perfil = () => {
         setPassword('');
     };
 
+    // Cuando se cierra la sesión se tiene que eliminar los datos almacenados
+    const handleLogout = () => {
+        cerrarSesion();
+    };
+
+    let contenido = null;
+
+    if (!autenticacion) {
+        contenido = (
+            <>
+                <View style={[styles.card, modoOscuro && styles.cardModoOscuro]}>
+                    <Text style={[styles.title, modoOscuro && styles.titleModoOscuro]}>Inicio de sesión</Text>
+                    <View style={styles.formContainer}>
+                        <TextInput
+                            style={[styles.input, modoOscuro && styles.inputModoOscuro]}
+                            placeholder="Correo electrónico"
+                            placeholderTextColor={modoOscuro ? 'white' : 'black'}
+                            value={email}
+                            onChangeText={setEmail}
+                            autoCapitalize="none"
+                        />
+                        <TextInput
+                            style={[styles.input, modoOscuro && styles.inputModoOscuro]}
+                            placeholderTextColor={modoOscuro ? 'white' : 'black'}
+                            placeholder="Contraseña"
+                            value={password}
+                            onChangeText={setPassword}
+                            secureTextEntry
+                        />
+                        <TouchableOpacity style={[styles.button, modoOscuro && styles.buttonModoOscuro]} onPress={handleLogin}>
+                            <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Iniciar sesión</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </>);
+    } else {
+        contenido = (
+            <>
+                <Text style={[styles.title, modoOscuro && styles.titleModoOscuro]}>¡Bienvenido!</Text>
+                <TouchableOpacity style={[styles.button, modoOscuro && styles.buttonModoOscuro]} onPress={handleLogout}>
+                    <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Cerrar sesión</Text>
+                </TouchableOpacity>
+            </>);
+    }
+
     return (
         <SafeAreaView style={[styles.container, modoOscuro && styles.containerModoOscuro]}>
-            <View style={[styles.card, modoOscuro && styles.cardModoOscuro]}>
-                <Text style={[styles.title, modoOscuro && styles.titleModoOscuro]}>Inicio de sesión</Text>
-                <View style={styles.formContainer}>
-                    <TextInput
-                        style={[styles.input, modoOscuro && styles.inputModoOscuro]}
-                        placeholder="Correo electrónico"
-                        placeholderTextColor={modoOscuro ? 'white' : 'black'}
-                        value={email}
-                        onChangeText={setEmail}
-                        autoCapitalize="none"
-                    />
-                    <TextInput
-                        style={[styles.input, modoOscuro && styles.inputModoOscuro]}
-                        placeholderTextColor={modoOscuro ? 'white' : 'black'}
-                        placeholder="Contraseña"
-                        value={password}
-                        onChangeText={setPassword}
-                        secureTextEntry
-                    />
-                    <TouchableOpacity style={[styles.button, modoOscuro && styles.buttonModoOscuro]} onPress={handleLogin}>
-                        <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Iniciar sesión</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+            {contenido}
             <View style={styles.switchContainer}>
                 <Text style={[styles.texto, modoOscuro && styles.textoModoOscuro]}>
                     {modoOscuro ? 'Modo claro ' : 'Modo oscuro '}
@@ -108,7 +130,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     },
     buttonModoOscuro: {
-        backgroundColor: 'black',
+        backgroundColor: 'lightgray',
     },
     buttonText: {
         color: 'white',
