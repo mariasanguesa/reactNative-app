@@ -3,6 +3,7 @@ import { useContext, useState } from 'react';
 import { StyleSheet, View, Text, Switch, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import axios from 'axios';
 import AutContext from '../contextos/AutContext';
+import { API_KEY} from '@env';
 
 const Perfil = () => {
 
@@ -22,7 +23,7 @@ const Perfil = () => {
             returnSecureToken: true
         }
 
-        axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAz2len4LT2BmdNFZEQqzUF1j3hB-xtUsw', authData)
+        axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key='+API_KEY, authData)
             .then((response) => {
                 actualizarSesion(response.data);
             })
@@ -71,7 +72,7 @@ const Perfil = () => {
     } else {
         contenido = (
             <>
-                <Text style={[styles.title, modoOscuro && styles.titleModoOscuro]}>¡Bienvenido!</Text>
+                <Text style={[styles.title, modoOscuro && styles.titleModoOscuro, { marginTop: 30 }]}>¡Bienvenido!</Text>
                 <TouchableOpacity style={[styles.button, modoOscuro && styles.buttonModoOscuro]} onPress={handleLogout}>
                     <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Cerrar sesión</Text>
                 </TouchableOpacity>
@@ -154,6 +155,7 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 8,
         marginHorizontal: 16,
+        marginTop: 30
     },
     cardModoOscuro: {
         backgroundColor: 'gray'
@@ -162,12 +164,10 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         position: 'absolute',
-        bottom: 0,
+        bottom: 20,
         width: '100%',
-        alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 10,
-        backgroundColor: 'lightgray',
     },
 
 });
