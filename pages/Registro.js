@@ -1,51 +1,40 @@
-import { ModoContext } from '../contextos/ModoContext';
 import { useContext, useState } from 'react';
-import { StyleSheet, View, Text, Switch, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity,SafeAreaView } from 'react-native';
 import axios from 'axios';
-import AutContext from '../contextos/AutContext';
 import { API_KEY } from '@env';
+import AutContext from '../contextos/AutContext';
+import { ModoContext } from '../contextos/ModoContext';
 
-const Perfil = (props) => {
-
-    const { modoOscuro, toggleModoOscuro } = useContext(ModoContext);
-
+const Registro = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    // Para que las credenciales sean accesibles en todos los componentes se almacenan en un contexto. Que con el login se modificará
     const { autenticacion, actualizarSesion, cerrarSesion } = useContext(AutContext);
+    const { modoOscuro } = useContext(ModoContext);
 
-    const handleLogin = () => {
+    const handleRegistro = () => {
         const authData = {
             email: email,
             password: password,
-            // Genera el token 
             returnSecureToken: true
-        }
+        };
 
-        axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + API_KEY, authData)
+        axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + API_KEY, authData)
             .then((response) => {
                 actualizarSesion(response.data);
             })
             .catch((error) => {
-                alert('El usuario o contraseña no son correctos.');
-            })
+                alert('Error');
+            });
+
         setEmail('');
         setPassword('');
     };
 
-    // Cuando se cierra la sesión se tiene que eliminar los datos almacenados
-    const handleLogout = () => {
-        cerrarSesion();
-    };
-
-    let contenido = null;
-
-    if (!autenticacion) {
-        contenido = (
-            <>
+    return (
+        <>
+            <SafeAreaView style={[styles.container, modoOscuro && styles.containerModoOscuro]}>
                 <View style={[styles.card, modoOscuro && styles.cardModoOscuro]}>
-                    <Text style={[styles.title, modoOscuro && styles.titleModoOscuro]}>Inicio de sesión</Text>
+                    <Text style={[styles.title, modoOscuro && styles.titleModoOscuro]}>Registrarse</Text>
                     <View style={styles.formContainer}>
                         <TextInput
                             style={[styles.input, modoOscuro && styles.inputModoOscuro]}
@@ -63,43 +52,16 @@ const Perfil = (props) => {
                             onChangeText={setPassword}
                             secureTextEntry
                         />
-                        <TouchableOpacity style={[styles.button, modoOscuro && styles.buttonModoOscuro]} onPress={handleLogin}>
-                            <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Iniciar sesión</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => props.handleRegistroClick()}>
-                            <Text style={[styles.texto, modoOscuro && styles.textoModoOscuro, { marginTop: 10, textDecorationLine:'underline' }]}>¿Todavía no tienes cuenta? Regístrate aquí</Text>
+                        <TouchableOpacity style={[styles.button, modoOscuro && styles.buttonModoOscuro]} onPress={handleRegistro}>
+                            <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Registro</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-            </>);
-    } else {
-        contenido = (
-            <>
-                <Text style={[styles.title, modoOscuro && styles.titleModoOscuro, { marginTop: 30 }]}>¡Bienvenido!</Text>
-                <TouchableOpacity style={[styles.button, modoOscuro && styles.buttonModoOscuro]} onPress={handleLogout}>
-                    <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Cerrar sesión</Text>
-                </TouchableOpacity>
-            </>);
-    }
-
-    return (
-        <SafeAreaView style={[styles.container, modoOscuro && styles.containerModoOscuro]}>
-            {contenido}
-            <View style={styles.switchContainer}>
-                <Text style={[styles.texto, modoOscuro && styles.textoModoOscuro]}>
-                    {modoOscuro ? 'Modo claro ' : 'Modo oscuro '}
-                </Text>
-                <Switch
-                    value={modoOscuro}
-                    onValueChange={toggleModoOscuro}
-                    thumbColor={modoOscuro ? 'white' : 'black'}
-                    trackColor={{ false: 'gray', true: 'gray' }}
-                />
-            </View>
-        </SafeAreaView>
+            </SafeAreaView>
+        </>
     );
+};
 
-}
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -174,4 +136,5 @@ const styles = StyleSheet.create({
     },
 
 });
-export default Perfil;
+
+export default Registro;
