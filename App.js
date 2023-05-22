@@ -16,11 +16,7 @@ const App = () => {
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen name="Navegador" component={NavegadorComponent} options={{ headerShown: false }} />
-            <Stack.Screen
-              name="Registro"
-              component={Registro}
-              options={{ headerShown: false }}
-            />
+            <Stack.Screen name="Registro" component={Registro} options={{ headerShown: false }}/>
           </Stack.Navigator>
         </NavigationContainer>
       </AutProvider>

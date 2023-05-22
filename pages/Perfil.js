@@ -1,5 +1,5 @@
 import { ModoContext } from '../contextos/ModoContext';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Switch, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import axios from 'axios';
 import AutContext from '../contextos/AutContext';
@@ -14,6 +14,15 @@ const Perfil = (props) => {
 
     // Para que las credenciales sean accesibles en todos los componentes se almacenan en un contexto. Que con el login se modificará
     const { autenticacion, actualizarSesion, cerrarSesion } = useContext(AutContext);
+
+    const [autenticacionLocal, setAutenticacionLocal] = useState(autenticacion);
+
+    useEffect(() => {
+      setAutenticacionLocal(autenticacion);
+    }, [autenticacion]);
+
+    console.log(autenticacionLocal);
+   // console.log(autenticacion);
 
     const handleLogin = () => {
         const authData = {

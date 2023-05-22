@@ -1,15 +1,21 @@
-import { useContext, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity,SafeAreaView } from 'react-native';
+import { useContext, useState, useEffect } from 'react';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import axios from 'axios';
 import { API_KEY } from '@env';
 import AutContext from '../contextos/AutContext';
 import { ModoContext } from '../contextos/ModoContext';
+import { useNavigation } from '@react-navigation/native';
 
 const Registro = () => {
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
     const { autenticacion, actualizarSesion, cerrarSesion } = useContext(AutContext);
+
     const { modoOscuro } = useContext(ModoContext);
+
+    const navigation = useNavigation();
 
     const handleRegistro = () => {
         const authData = {
@@ -21,6 +27,8 @@ const Registro = () => {
         axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + API_KEY, authData)
             .then((response) => {
                 actualizarSesion(response.data);
+                alert('Usuario registrado con éxito.');
+                navigation.navigate('Perfil');
             })
             .catch((error) => {
                 alert('Error');

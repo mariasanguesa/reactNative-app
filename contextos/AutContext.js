@@ -4,7 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const AutContext = createContext();
 
 export const AutProvider = ({ children }) => {
-    const [autenticacion, setAutenticacion] = useState(null);
+
+    const [autenticacion, setAutenticacion] = useState('');
 
     // No perder info al cerrar la app
     useEffect(() => {
