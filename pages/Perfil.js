@@ -4,6 +4,7 @@ import { StyleSheet, View, Text, Switch, TextInput, TouchableOpacity, SafeAreaVi
 import axios from 'axios';
 import AutContext from '../contextos/AutContext';
 import { API_KEY } from '@env';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const Perfil = (props) => {
 
@@ -33,6 +34,7 @@ const Perfil = (props) => {
         setEmail('');
         setPassword('');
     };
+
 
     // Cuando se cierra la sesión se tiene que eliminar los datos almacenados
     const handleLogout = () => {
@@ -67,7 +69,7 @@ const Perfil = (props) => {
                             <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Iniciar sesión</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => props.handleRegistroClick()}>
-                            <Text style={[styles.texto, modoOscuro && styles.textoModoOscuro, { marginTop: 10, textDecorationLine:'underline' }]}>¿Todavía no tienes cuenta? Regístrate aquí</Text>
+                            <Text style={[styles.texto, modoOscuro && styles.textoModoOscuro, { marginTop: 10, textDecorationLine: 'underline' }]}>¿Todavía no tienes cuenta? Regístrate aquí</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -76,6 +78,28 @@ const Perfil = (props) => {
         contenido = (
             <>
                 <Text style={[styles.title, modoOscuro && styles.titleModoOscuro, { marginTop: 30 }]}>¡Bienvenido!</Text>
+                <Image style={styles.perfilImagen} />
+                <View style={[{ flexDirection: 'row', alignItems: 'center', marginLeft: 15, paddingVertical: 15 }]}>
+                    <View style={{ flex: 1 }}>
+                        <Text style={[styles.perfil, modoOscuro && styles.perfilModoOscuro]}>Nombre</Text>
+                        <Text style={[styles.perfil, modoOscuro && styles.perfilModoOscuro]}>Fecha de nacimiento</Text>
+                        <Text style={[styles.perfil, modoOscuro && styles.perfilModoOscuro]}>Correo electrónico</Text>
+                    </View>
+                    <View style={{ flex: 1 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>María Sangüesa</Text>
+                            <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
+                        </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>02/11/2000</Text>
+                            <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
+                        </View>
+                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>maria@upna.es</Text>
+                            <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
+                        </View>
+                    </View>
+                </View>
                 <TouchableOpacity style={[styles.button, modoOscuro && styles.buttonModoOscuro]} onPress={handleLogout}>
                     <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Cerrar sesión</Text>
                 </TouchableOpacity>
@@ -158,7 +182,7 @@ const styles = StyleSheet.create({
         padding: 16,
         borderRadius: 8,
         marginHorizontal: 16,
-        marginTop: 30
+        marginTop: 30,
     },
     cardModoOscuro: {
         backgroundColor: 'gray'
@@ -171,6 +195,27 @@ const styles = StyleSheet.create({
         width: '100%',
         justifyContent: 'center',
         paddingVertical: 10,
+    },
+    perfilImagen: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        marginBottom: 10,
+    },
+    perfil: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: 'black',
+    },
+    perfilModoOscuro: {
+        color: 'white',
+    },
+    perfilValor: {
+        fontSize: 14,
+        color: 'gray',
+    },
+    perfilValorModoOscuro: {
+        color: 'lightgray',
     },
 
 });
