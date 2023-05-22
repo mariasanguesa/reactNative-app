@@ -11,7 +11,7 @@ const Registro = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const { autenticacion, actualizarSesion, cerrarSesion } = useContext(AutContext);
+    const { actualizarSesion } = useContext(AutContext);
 
     const { modoOscuro } = useContext(ModoContext);
 
@@ -28,6 +28,21 @@ const Registro = () => {
             .then((response) => {
                 actualizarSesion(response.data);
                 alert('Usuario registrado con éxito.');
+                //MODIFICAR
+                const usuario = {
+                    nombre: 'Nombre Prueba',
+                    fechaNacimiento: '01/01/2001',
+                    correoElectronico: email,
+                };
+                axios
+                    .post('https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios.json', usuario)
+                    .then((response) => {
+                        console.log('Usuario almacenado con éxito.');
+                    })
+                    .catch((error) => {
+                        console.error('Error al almacenar el usuario: ', error);
+                    });
+
                 navigation.navigate('Perfil');
             })
             .catch((error) => {

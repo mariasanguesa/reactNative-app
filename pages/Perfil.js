@@ -77,7 +77,7 @@ const Perfil = (props) => {
     } else {
         contenido = (
             <>
-                <Text style={[styles.title, modoOscuro && styles.titleModoOscuro, { marginTop: 30 }]}>¡Bienvenido!</Text>
+                <Text style={[styles.title, modoOscuro && styles.titleModoOscuro, { marginTop: 30 }]}>¡Bienvenid@!</Text>
                 <Image style={styles.perfilImagen} />
                 <View style={[{ flexDirection: 'row', alignItems: 'center', marginLeft: 15, paddingVertical: 15 }]}>
                     <View style={{ flex: 1 }}>
@@ -85,6 +85,7 @@ const Perfil = (props) => {
                         <Text style={[styles.perfil, modoOscuro && styles.perfilModoOscuro]}>Fecha de nacimiento</Text>
                         <Text style={[styles.perfil, modoOscuro && styles.perfilModoOscuro]}>Correo electrónico</Text>
                     </View>
+                    {/* MODIFICAR */}
                     <View style={{ flex: 1 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>María Sangüesa</Text>
