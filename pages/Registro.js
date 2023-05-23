@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, SafeAreaView, Modal } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, SafeAreaView, Modal, Dimensions } from 'react-native';
 import axios from 'axios';
 import { API_KEY } from '@env';
 import AutContext from '../contextos/AutContext';
@@ -18,10 +18,15 @@ const Registro = () => {
 
     const navigation = useNavigation();
 
-    const [showCalendar, setShowCalendar] = useState(false);
+    const [showCalendario, setShowCalendario] = useState(false);
 
-    const toggleCalendar = () => {
-        setShowCalendar(!showCalendar);
+    const handleCalendario = () => {
+        setShowCalendario(!showCalendario);
+    };
+
+    const handleFecha = (fecha) => {
+        setNacimiento(fecha.format('DD-MM-YYYY'));
+        setShowCalendario(false); 
     };
 
     const handleRegistro = () => {
@@ -75,7 +80,7 @@ const Registro = () => {
                             onChangeText={setNombre}
                             autoCapitalize="none"
                         />
-                        <TouchableOpacity onPress={toggleCalendar}>
+                        <View style={styles.inputContainer}>
                             <TextInput
                                 style={[styles.input, modoOscuro && styles.inputModoOscuro]}
                                 placeholder="Fecha de nacimiento"
@@ -84,8 +89,9 @@ const Registro = () => {
                                 onChangeText={setNacimiento}
                                 autoCapitalize="none"
                                 editable={false}
+                                onTouchStart={handleCalendario} 
                             />
-                        </TouchableOpacity>
+                        </View>
                         <TextInput
                             style={[styles.input, modoOscuro && styles.inputModoOscuro]}
                             placeholder="Correo electrónico"
@@ -106,12 +112,12 @@ const Registro = () => {
                             <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Registro</Text>
                         </TouchableOpacity>
                     </View>
-                    <Modal animationType="slide" transparent={true} visible={showCalendar}>
+                    <Modal animationType="slide" transparent={true} visible={showCalendario}>
                         <View style={[styles.modalContainer, modoOscuro && styles.modalContainerModoOscuro]}>
-                            <View style={[styles.calendarContainer, modoOscuro && styles.calendarContainerModoOscuro]}>
-                                <CalendarPicker onDateChange={setNacimiento} />
+                            <View style={styles.calendarModalContent}>
+                                <CalendarPicker onDateChange={handleFecha} width={300}/>
                             </View>
-                            <TouchableOpacity style={styles.closeButton} onPress={toggleCalendar}>
+                            <TouchableOpacity style={[styles.closeButton, modoOscuro && styles.closeButtonModoOscuro]} onPress={handleCalendario}>
                                 <Text style={styles.closeButtonText}>Cerrar</Text>
                             </TouchableOpacity>
                         </View>
@@ -129,12 +135,6 @@ const styles = StyleSheet.create({
     },
     containerModoOscuro: {
         backgroundColor: 'black',
-    },
-    texto: {
-        color: 'black', // Color de texto claro
-    },
-    textoModoOscuro: {
-        color: 'lightgray', // Color de texto en modo oscuro
     },
     formContainer: {
         justifyContent: 'center',
@@ -184,42 +184,39 @@ const styles = StyleSheet.create({
     cardModoOscuro: {
         backgroundColor: 'gray'
     },
-    switchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        position: 'absolute',
-        bottom: 20,
-        width: '100%',
-        justifyContent: 'center',
-        paddingVertical: 10,
-    },
-    calendarContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'white',
-    },
-    calendarContainerModoOscuro: {
-        backgroundColor: 'gray',
-    },
     modalContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'lightgray',
     },
     modalContainerModoOscuro: {
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        backgroundColor: 'gray',
     },
     closeButton: {
-        marginTop: 10,
         padding: 10,
         backgroundColor: 'lightpink',
         borderRadius: 5,
+    },
+    closeButtonModoOscuro: {
+        backgroundColor: 'black',
     },
     closeButtonText: {
         color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
+    },
+    calendarModalContent: {
+        height: Dimensions.get('window').height * 0.35,
+        backgroundColor: 'white',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        marginTop: 100,
+    },
+    calendarButtonContainer: {
+        alignItems: 'center',
+        marginBottom: 10,
     },
 });
 
