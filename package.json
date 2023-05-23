@@ -30,6 +30,7 @@
     "react-bootstrap": "^2.7.4",
     "react-dom": "18.2.0",
     "react-native": "0.71.8",
+    "react-native-calendar-picker": "^7.1.4",
     "react-native-config": "^1.5.1",
     "react-native-datepicker": "^1.7.2",
     "react-native-dotenv": "^3.4.8",
