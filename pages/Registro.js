@@ -10,12 +10,15 @@ const Registro = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [nacimiento, setNacimiento] = useState('');
+    const [nombre, setNombre] = useState('');
 
     const { actualizarSesion } = useContext(AutContext);
 
     const { modoOscuro } = useContext(ModoContext);
 
     const navigation = useNavigation();
+
 
     const handleRegistro = () => {
         const authData = {
@@ -28,10 +31,9 @@ const Registro = () => {
             .then((response) => {
                 actualizarSesion(response.data);
                 alert('Usuario registrado con éxito.');
-                //MODIFICAR
                 const usuario = {
-                    nombre: 'Nombre Prueba',
-                    fechaNacimiento: '01/01/2001',
+                    nombre: nombre,
+                    fechaNacimiento: nacimiento,
                     correoElectronico: email,
                 };
                 axios
@@ -51,6 +53,8 @@ const Registro = () => {
 
         setEmail('');
         setPassword('');
+        setNacimiento('');
+        setNombre('');
     };
 
     return (
@@ -59,6 +63,15 @@ const Registro = () => {
                 <View style={[styles.card, modoOscuro && styles.cardModoOscuro]}>
                     <Text style={[styles.title, modoOscuro && styles.titleModoOscuro]}>Registrarse</Text>
                     <View style={styles.formContainer}>
+                        <TextInput
+                            style={[styles.input, modoOscuro && styles.inputModoOscuro]}
+                            placeholder="Nombre completo"
+                            placeholderTextColor={modoOscuro ? 'white' : 'black'}
+                            value={nombre}
+                            onChangeText={setNombre}
+                            autoCapitalize="none"
+                        />
+
                         <TextInput
                             style={[styles.input, modoOscuro && styles.inputModoOscuro]}
                             placeholder="Correo electrónico"
@@ -75,6 +88,7 @@ const Registro = () => {
                             onChangeText={setPassword}
                             secureTextEntry
                         />
+
                         <TouchableOpacity style={[styles.button, modoOscuro && styles.buttonModoOscuro]} onPress={handleRegistro}>
                             <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Registro</Text>
                         </TouchableOpacity>
