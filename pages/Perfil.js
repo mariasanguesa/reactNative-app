@@ -1,6 +1,6 @@
 import { ModoContext } from '../contextos/ModoContext';
 import { useContext, useState, useEffect } from 'react';
-import { StyleSheet, View, Text, Switch, TextInput, TouchableOpacity, SafeAreaView, Image } from 'react-native';
+import { Modal, StyleSheet, View, Text, Switch, TextInput, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import axios from 'axios';
 import AutContext from '../contextos/AutContext';
 import { API_KEY } from '@env';
@@ -49,10 +49,32 @@ const Perfil = (props) => {
         setPassword('');
     };
 
-
     // Cuando se cierra la sesión se tiene que eliminar los datos almacenados
     const handleLogout = () => {
         cerrarSesion();
+    };
+
+    // Las siguientes lineas son para controlar el modal que aparece para editar las propiedades de los usuarios
+    const [modalVisible, setModalVisible] = useState(false);
+    const [valorEditado, setValorEditado] = useState('');
+    const [propiedadEditada, setPropiedadEditada] = useState('');
+
+    const abrirModal = (propiedad) => {
+        setModalVisible(true);
+        setValorEditado(infoUsuario[propiedad]);
+        setPropiedadEditada(propiedad);
+    };
+
+    const cerrarModal = () => {
+        setModalVisible(false);
+    };
+
+    const guardarCambios = () => {
+        setInfoUsuario((prevInfoUsuario) => ({
+            ...prevInfoUsuario,
+            [propiedadEditada]: valorEditado,
+        }));
+        cerrarModal();
     };
 
     let contenido = null;
@@ -102,16 +124,31 @@ const Perfil = (props) => {
                     <View style={{ flex: 1 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>{infoUsuario.nombre}</Text>
-                            <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
+                            <TouchableOpacity onPress={() => abrirModal('nombre')}>
+                                <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
+                            </TouchableOpacity>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>{infoUsuario.fechaNacimiento}</Text>
-                            <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
+                            <TouchableOpacity onPress={() => abrirModal('fechaNacimiento')}>
+                                <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
+                            </TouchableOpacity>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>{infoUsuario.correoElectronico}</Text>
-                            <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
+                            <TouchableOpacity onPress={() => abrirModal('correoElectronico')}>
+                                <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
+                            </TouchableOpacity>
                         </View>
+
+                        <Modal visible={modalVisible} onRequestClose={cerrarModal}>
+                            <View style={[styles.modalEditar]}>
+                                <TextInput value={valorEditado} onChangeText={setValorEditado} />
+                                <TouchableOpacity onPress={() => guardarCambios()}>
+                                    <Text>Guardar</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </Modal>
                     </View>
                 </View>
                 <TouchableOpacity style={[styles.button, modoOscuro && styles.buttonModoOscuro]} onPress={handleLogout}>
@@ -231,6 +268,15 @@ const styles = StyleSheet.create({
     perfilValorModoOscuro: {
         color: 'lightgray',
     },
+    modalEditar: {
+        position: 'absolute',
+        top: 0,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+    }
 
 });
 export default Perfil;
