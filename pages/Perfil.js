@@ -142,10 +142,13 @@ const Perfil = (props) => {
                         </View>
 
                         <Modal visible={modalVisible} onRequestClose={cerrarModal}>
-                            <View style={[styles.modalEditar]}>
-                                <TextInput value={valorEditado} onChangeText={setValorEditado} />
-                                <TouchableOpacity onPress={() => guardarCambios()}>
-                                    <Text>Guardar</Text>
+                            <View style={[styles.modalEditar, modoOscuro && styles.modalEditarModoOscuro]}>
+                                <Text style={[styles.modalTitle, modoOscuro && styles.modalTitleModoOscuro]}>
+                                    Modifica tu {propiedadEditada === 'correoElectronico' ? 'correo electrónico' : propiedadEditada === 'fechaNacimiento' ? 'fecha de nacimiento' : propiedadEditada}
+                                </Text>
+                                <TextInput style={[styles.inputModal, modoOscuro && styles.inputModalModoOscuro]} placeholderTextColor={modoOscuro ? 'white' : 'black'} value={valorEditado} onChangeText={setValorEditado} />
+                                <TouchableOpacity style={[styles.guardarButton, modoOscuro && styles.guardarButtonModoOscuro]} onPress={() => guardarCambios()}>
+                                    <Text style={[styles.guardarButtonText, modoOscuro && styles.guardarButtonTextModoOscuro]}>Guardar</Text>
                                 </TouchableOpacity>
                             </View>
                         </Modal>
@@ -214,6 +217,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         fontWeight: 'bold',
+        textTransform: 'uppercase',
     },
     buttonTextModoOscuro: {
         color: 'white',
@@ -234,6 +238,7 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginHorizontal: 16,
         marginTop: 30,
+        elevation: 2
     },
     cardModoOscuro: {
         backgroundColor: 'gray'
@@ -248,15 +253,18 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
     },
     perfilImagen: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
+        width: 200,
+        height: 200,
+        borderRadius: 100,
         marginBottom: 10,
+        borderWidth: 2,
+        borderColor: 'lightgray',
     },
     perfil: {
         fontSize: 16,
         fontWeight: 'bold',
         color: 'black',
+        marginBottom: 5,
     },
     perfilModoOscuro: {
         color: 'white',
@@ -269,14 +277,56 @@ const styles = StyleSheet.create({
         color: 'lightgray',
     },
     modalEditar: {
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        left: 0,
-        right: 0,
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'white',
         justifyContent: 'center',
         alignItems: 'center',
-    }
-
+        paddingHorizontal: 20,
+    },
+    modalEditarModoOscuro: {
+        backgroundColor: 'black',
+    },
+    inputModal: {
+        height: 40,
+        borderWidth: 1,
+        marginBottom: 20,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+        borderColor: 'gray',
+        backgroundColor: 'white',
+        width: '100%',
+    },
+    inputModalModoOscuro: {
+        color: 'white',
+        borderColor: 'lightgray',
+        backgroundColor: 'black',
+    },
+    guardarButton: {
+        backgroundColor: 'lightpink',
+        paddingVertical: 10,
+        alignItems: 'center',
+        borderRadius: 5,
+        width: '100%',
+    },
+    guardarButtonModoOscuro: {
+        backgroundColor: 'lightgray',
+    },
+    guardarButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        textTransform: 'uppercase',
+    },
+    guardarButtonTextModoOscuro: {
+        color: 'white',
+    },
+    modalTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        color: 'black',
+    },
+    modalTitleModoOscuro: {
+        color: 'white',
+    },
 });
 export default Perfil;
