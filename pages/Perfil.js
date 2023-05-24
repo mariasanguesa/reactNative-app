@@ -70,11 +70,19 @@ const Perfil = (props) => {
     };
 
     const guardarCambios = () => {
-        setInfoUsuario((prevInfoUsuario) => ({
-            ...prevInfoUsuario,
-            [propiedadEditada]: valorEditado,
-        }));
-        cerrarModal();
+        axios.patch(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}.json`, {[propiedadEditada]: valorEditado,})
+            .then((response) => {
+                // Actualiza la información del usuario en el estado local si la solicitud es exitosa
+                setInfoUsuario((prevInfoUsuario) => ({
+                    ...prevInfoUsuario,
+                    [propiedadEditada]: valorEditado,
+                }));
+                cerrarModal();
+            })
+            .catch((error) => {
+                console.log('Error al guardar los cambios:', error);
+                // Maneja el error de acuerdo a tus necesidades
+            });
     };
 
     let contenido = null;
@@ -136,15 +144,12 @@ const Perfil = (props) => {
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>{infoUsuario.correoElectronico}</Text>
-                            <TouchableOpacity onPress={() => abrirModal('correoElectronico')}>
-                                <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
-                            </TouchableOpacity>
                         </View>
 
                         <Modal visible={modalVisible} onRequestClose={cerrarModal}>
                             <View style={[styles.modalEditar, modoOscuro && styles.modalEditarModoOscuro]}>
                                 <Text style={[styles.modalTitle, modoOscuro && styles.modalTitleModoOscuro]}>
-                                    Modifica tu {propiedadEditada === 'correoElectronico' ? 'correo electrónico' : propiedadEditada === 'fechaNacimiento' ? 'fecha de nacimiento' : propiedadEditada}
+                                    Modifica tu { propiedadEditada === 'fechaNacimiento' ? 'fecha de nacimiento' : propiedadEditada}
                                 </Text>
                                 <TextInput style={[styles.inputModal, modoOscuro && styles.inputModalModoOscuro]} placeholderTextColor={modoOscuro ? 'white' : 'black'} value={valorEditado} onChangeText={setValorEditado} />
                                 <TouchableOpacity style={[styles.guardarButton, modoOscuro && styles.guardarButtonModoOscuro]} onPress={() => guardarCambios()}>
