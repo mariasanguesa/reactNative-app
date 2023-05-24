@@ -45,8 +45,8 @@ const Registro = () => {
                     fechaNacimiento: nacimiento,
                     correoElectronico: email,
                 };
-                axios
-                    .post('https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios.json', usuario)
+                //Importante que sea un put para que firebase no cree un identificador aleatorio. Las comillas tampoco tienen que ser simples.
+                axios.put(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${response.data.localId}.json`, usuario)
                     .then((response) => {
                         console.log('Usuario almacenado con éxito.');
                     })

@@ -1,5 +1,5 @@
 import { ModoContext } from '../contextos/ModoContext';
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { StyleSheet, View, Text, Switch, TextInput, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import axios from 'axios';
 import AutContext from '../contextos/AutContext';
@@ -15,6 +15,20 @@ const Perfil = (props) => {
 
     // Para que las credenciales sean accesibles en todos los componentes se almacenan en un contexto. Que con el login se modificará
     const { autenticacion, actualizarSesion, cerrarSesion } = useContext(AutContext);
+
+    const [infoUsuario, setInfoUsuario] = useState([]);
+
+    useEffect(() => {
+        if (autenticacion) {
+            axios.get('https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios.json')
+                .then((response) => {
+                    setInfoUsuario(response.data[autenticacion.localId]);
+                })
+                .catch((error) => {
+                    console.log('Error');
+                });
+        }
+    }, [autenticacion]);
 
     const handleLogin = () => {
         const authData = {
@@ -85,18 +99,17 @@ const Perfil = (props) => {
                         <Text style={[styles.perfil, modoOscuro && styles.perfilModoOscuro]}>Fecha de nacimiento</Text>
                         <Text style={[styles.perfil, modoOscuro && styles.perfilModoOscuro]}>Correo electrónico</Text>
                     </View>
-                    {/* MODIFICAR */}
                     <View style={{ flex: 1 }}>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>María Sangüesa</Text>
+                            <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>{infoUsuario.nombre}</Text>
                             <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>02/11/2000</Text>
+                            <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>{infoUsuario.fechaNacimiento}</Text>
                             <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>maria@upna.es</Text>
+                            <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>{infoUsuario.correoElectronico}</Text>
                             <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
                         </View>
                     </View>

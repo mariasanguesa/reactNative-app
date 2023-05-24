@@ -1,6 +1,6 @@
 import { Text, Image, StyleSheet, Dimensions } from 'react-native';
 import { ModoContext } from '../contextos/ModoContext';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -10,20 +10,12 @@ const HomeComponent = (props) => {
   return (
     <>
       <Image style={styles.image} source={{ uri: props.src }} />
-      <Text style={[styles.name, modoOscuro && styles.nameOscuro]}>{props.nombre}</Text>
+      <Text style={[styles.name, modoOscuro && styles.nameModoOscuro]}>{props.nombre}</Text>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-  },
   image: {
     width: windowWidth - 40,
     height: windowWidth - 40,
@@ -34,7 +26,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  nameOscuro: {
+  nameModoOscuro: {
     fontSize: 16,
     fontWeight: 'bold',
     color:'white'

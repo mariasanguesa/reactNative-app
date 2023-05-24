@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TextInput } from 'react-native';
+import { useEffect, useState, useContext } from 'react';
+import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import RestaurantesContext from '../contextos/RestaurantesContext';
@@ -77,11 +77,11 @@ const Home = () => {
 
   return (
     <View style={[styles.container, modoOscuro && styles.containerModoOscuro]}>
-      <Text style={[styles.title, modoOscuro && styles.titleOscuro]}>Restaurantes disponibles</Text>
+      <Text style={[styles.title, modoOscuro && styles.titleModoOscuro]}>Restaurantes disponibles</Text>
       <View style={styles.searchContainer}>
         <MaterialIcons name="search"  style={[styles.searchIcon, modoOscuro && styles.searchIconOscuro]}/>
         <TextInput
-          style={[styles.input, modoOscuro && styles.inputOscuro]}
+          style={[styles.input, modoOscuro && styles.inputModoOscuro]}
           value={busqueda}
           placeholder="Búsqueda por restaurante"
           onChangeText={handleChange}
@@ -104,12 +104,6 @@ const styles = StyleSheet.create({
     containerModoOscuro: {
         backgroundColor: 'black',
     },
-    texto: {
-        color: 'black', 
-    },
-    textoModoOscuro: {
-        color: 'white',
-    },
     title: {
         fontSize: 20,
         textAlign: 'center',
@@ -117,7 +111,7 @@ const styles = StyleSheet.create({
         marginTop: 50,
         color: 'black',
     },
-    titleOscuro: {
+    titleModoOscuro: {
         fontSize: 20,
         textAlign: 'center',
         marginBottom: 10,
@@ -145,7 +139,7 @@ const styles = StyleSheet.create({
       flex: 2,
       color: 'black',
     },
-    inputOscuro: {
+    inputModoOscuro: {
       color: 'white',
     },
     card: {
