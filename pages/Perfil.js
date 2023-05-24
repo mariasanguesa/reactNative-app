@@ -5,6 +5,7 @@ import axios from 'axios';
 import AutContext from '../contextos/AutContext';
 import { API_KEY } from '@env';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as ImagePicker from 'expo-image-picker';
 
 const Perfil = (props) => {
 
@@ -70,9 +71,8 @@ const Perfil = (props) => {
     };
 
     const guardarCambios = () => {
-        axios.patch(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}.json`, {[propiedadEditada]: valorEditado,})
+        axios.patch(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}.json`, { [propiedadEditada]: valorEditado, })
             .then((response) => {
-                // Actualiza la información del usuario en el estado local si la solicitud es exitosa
                 setInfoUsuario((prevInfoUsuario) => ({
                     ...prevInfoUsuario,
                     [propiedadEditada]: valorEditado,
@@ -80,9 +80,27 @@ const Perfil = (props) => {
                 cerrarModal();
             })
             .catch((error) => {
-                console.log('Error al guardar los cambios:', error);
-                // Maneja el error de acuerdo a tus necesidades
+                console.log('Error');
             });
+    };
+    const [response, setResponse] = useState(null);
+
+    // Permiso para acceder a la galeria
+    const requestPermission = async () => {
+        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+            return;
+        }
+    };
+
+    // Abrir la biblioteca de imágenes para seleccionar una imagen
+    const seleccionarImagen = async () => {
+        await requestPermission();
+        const result = await ImagePicker.launchImageLibraryAsync();
+        if (!result.canceled) {
+            // La imagen fue seleccionada exitosamente
+            setResponse(result.assets[0]);
+        }
     };
 
     let contenido = null;
@@ -122,7 +140,12 @@ const Perfil = (props) => {
         contenido = (
             <>
                 <Text style={[styles.title, modoOscuro && styles.titleModoOscuro, { marginTop: 30 }]}>¡Bienvenid@!</Text>
-                <Image style={styles.perfilImagen} />
+                <View style={[styles.perfilImagenContainer, modoOscuro && styles.perfilImagenContainerModoOscuro]}>
+                    <TouchableOpacity onPress={seleccionarImagen}>
+                        <Text>Seleccionar imagen de perfil</Text>
+                    </TouchableOpacity>
+                    <Image source={{ uri: response ? response.uri : null }} style={styles.perfilImagen} />
+                </View>
                 <View style={[{ flexDirection: 'row', alignItems: 'center', marginLeft: 15, paddingVertical: 15 }]}>
                     <View style={{ flex: 1 }}>
                         <Text style={[styles.perfil, modoOscuro && styles.perfilModoOscuro]}>Nombre</Text>
@@ -133,13 +156,13 @@ const Perfil = (props) => {
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>{infoUsuario.nombre}</Text>
                             <TouchableOpacity onPress={() => abrirModal('nombre')}>
-                                <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
+                                <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5, marginBottom: 10 }} />
                             </TouchableOpacity>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                             <Text style={[styles.perfilValor, modoOscuro && styles.perfilValorModoOscuro]}>{infoUsuario.fechaNacimiento}</Text>
                             <TouchableOpacity onPress={() => abrirModal('fechaNacimiento')}>
-                                <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5 }} />
+                                <Ionicons name="pencil" size={15} color="gray" style={{ marginLeft: 5, marginBottom: 10 }} />
                             </TouchableOpacity>
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
@@ -149,7 +172,7 @@ const Perfil = (props) => {
                         <Modal visible={modalVisible} onRequestClose={cerrarModal}>
                             <View style={[styles.modalEditar, modoOscuro && styles.modalEditarModoOscuro]}>
                                 <Text style={[styles.modalTitle, modoOscuro && styles.modalTitleModoOscuro]}>
-                                    Modifica tu { propiedadEditada === 'fechaNacimiento' ? 'fecha de nacimiento' : propiedadEditada}
+                                    Modifica tu {propiedadEditada === 'fechaNacimiento' ? 'fecha de nacimiento' : propiedadEditada}
                                 </Text>
                                 <TextInput style={[styles.inputModal, modoOscuro && styles.inputModalModoOscuro]} placeholderTextColor={modoOscuro ? 'white' : 'black'} value={valorEditado} onChangeText={setValorEditado} />
                                 <TouchableOpacity style={[styles.guardarButton, modoOscuro && styles.guardarButtonModoOscuro]} onPress={() => guardarCambios()}>
@@ -277,6 +300,7 @@ const styles = StyleSheet.create({
     perfilValor: {
         fontSize: 14,
         color: 'gray',
+        marginBottom: 5,
     },
     perfilValorModoOscuro: {
         color: 'lightgray',
@@ -332,6 +356,14 @@ const styles = StyleSheet.create({
     },
     modalTitleModoOscuro: {
         color: 'white',
+    },
+    perfilImagenContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    perfilImagenContainerModoOscuro: {
+        borderColor: 'lightgray',
     },
 });
 export default Perfil;
