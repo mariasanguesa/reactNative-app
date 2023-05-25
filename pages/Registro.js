@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import CalendarPicker from 'react-native-calendar-picker';
 
 const Registro = () => {
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [nacimiento, setNacimiento] = useState('');
@@ -26,10 +27,23 @@ const Registro = () => {
 
     const handleFecha = (fecha) => {
         setNacimiento(fecha.format('DD-MM-YYYY'));
-        setShowCalendario(false); 
+        setShowCalendario(false);
     };
 
+    //Se deben rellenar todos los campos para poder registrarse.
+    const [camposSinRellenar, setCamposSinRellenar] = useState([]);
+
     const handleRegistro = () => {
+        const camposSinRellenar = [];
+        if (!nombre) camposSinRellenar.push('nombre');
+        if (!nacimiento) camposSinRellenar.push('nacimiento');
+        if (!email) camposSinRellenar.push('email');
+        if (!password) camposSinRellenar.push('password');
+
+        if (camposSinRellenar.length > 0) {
+            setCamposSinRellenar(camposSinRellenar);
+            return;
+        }
         const authData = {
             email: email,
             password: password,
@@ -41,6 +55,7 @@ const Registro = () => {
                 actualizarSesion(response.data);
                 alert('Usuario registrado con éxito.');
                 const usuario = {
+                    imagen: '',
                     nombre: nombre,
                     fechaNacimiento: nacimiento,
                     correoElectronico: email,
@@ -64,6 +79,7 @@ const Registro = () => {
         setPassword('');
         setNacimiento('');
         setNombre('');
+        setCamposSinRellenar([]);
     };
 
     return (
@@ -72,8 +88,9 @@ const Registro = () => {
                 <View style={[styles.card, modoOscuro && styles.cardModoOscuro]}>
                     <Text style={[styles.title, modoOscuro && styles.titleModoOscuro]}>Registrarse</Text>
                     <View style={styles.formContainer}>
+                        {camposSinRellenar.includes('nombre') && <Text style={styles.errorText}>Campo obligatorio</Text>}
                         <TextInput
-                            style={[styles.input, modoOscuro && styles.inputModoOscuro]}
+                            style={[styles.input,modoOscuro && styles.inputModoOscuro,camposSinRellenar.includes('nombre') && styles.inputError]}
                             placeholder="Nombre completo"
                             placeholderTextColor={modoOscuro ? 'white' : 'black'}
                             value={nombre}
@@ -81,27 +98,30 @@ const Registro = () => {
                             autoCapitalize="none"
                         />
                         <View style={styles.inputContainer}>
+                            {camposSinRellenar.includes('nacimiento') && <Text style={styles.errorText}>Campo obligatorio</Text>}
                             <TextInput
-                                style={[styles.input, modoOscuro && styles.inputModoOscuro]}
-                                placeholder="Fecha de nacimiento"
+                            style={[styles.input,modoOscuro && styles.inputModoOscuro,camposSinRellenar.includes('nacimiento') && styles.inputError]}
+                            placeholder="Fecha de nacimiento"
                                 placeholderTextColor={modoOscuro ? 'white' : 'black'}
                                 value={nacimiento}
                                 onChangeText={setNacimiento}
                                 autoCapitalize="none"
                                 editable={false}
-                                onTouchStart={handleCalendario} 
+                                onTouchStart={handleCalendario}
                             />
                         </View>
+                        {camposSinRellenar.includes('email') && <Text style={styles.errorText}>Campo obligatorio</Text>}
                         <TextInput
-                            style={[styles.input, modoOscuro && styles.inputModoOscuro]}
+                            style={[styles.input,modoOscuro && styles.inputModoOscuro,camposSinRellenar.includes('email') && styles.inputError]}
                             placeholder="Correo electrónico"
                             placeholderTextColor={modoOscuro ? 'white' : 'black'}
                             value={email}
                             onChangeText={setEmail}
                             autoCapitalize="none"
                         />
+                        {camposSinRellenar.includes('password') && <Text style={styles.errorText}>Campo obligatorio</Text>}
                         <TextInput
-                            style={[styles.input, modoOscuro && styles.inputModoOscuro]}
+                            style={[styles.input,modoOscuro && styles.inputModoOscuro,camposSinRellenar.includes('password') && styles.inputError]}
                             placeholderTextColor={modoOscuro ? 'white' : 'black'}
                             placeholder="Contraseña"
                             value={password}
@@ -115,7 +135,7 @@ const Registro = () => {
                     <Modal animationType="slide" transparent={true} visible={showCalendario}>
                         <View style={[styles.modalContainer, modoOscuro && styles.modalContainerModoOscuro]}>
                             <View style={styles.calendarModalContent}>
-                                <CalendarPicker onDateChange={handleFecha} width={300}/>
+                                <CalendarPicker onDateChange={handleFecha} width={300} locale="es" />
                             </View>
                             <TouchableOpacity style={[styles.closeButton, modoOscuro && styles.closeButtonModoOscuro]} onPress={handleCalendario}>
                                 <Text style={styles.closeButtonText}>Cerrar</Text>
@@ -217,6 +237,13 @@ const styles = StyleSheet.create({
     calendarButtonContainer: {
         alignItems: 'center',
         marginBottom: 10,
+    },
+    inputError: {
+        borderColor: 'red',
+    },
+    errorText: {
+        color: 'red',
+        marginBottom: 5,
     },
 });
 
