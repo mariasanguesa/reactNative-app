@@ -83,7 +83,6 @@ const Perfil = (props) => {
                 console.log('Error');
             });
     };
-    const [response, setResponse] = useState(null);
 
     // Permiso para acceder a la galeria
     const requestPermission = async () => {
@@ -98,8 +97,24 @@ const Perfil = (props) => {
         await requestPermission();
         const result = await ImagePicker.launchImageLibraryAsync();
         if (!result.canceled) {
-            // La imagen fue seleccionada exitosamente
-            setResponse(result.assets[0]);
+            axios.put(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}/imagen.json`, result.assets[0])
+                .then((response) => {
+                    setInfoUsuario((prevInfoUsuario) => ({
+                        ...prevInfoUsuario,
+                        ['imagen']: result.assets[0],
+                    }));
+                })
+                .catch((error) => {
+                    console.error('Error.');
+                });
+        }
+    };
+
+    const imagenPerfil = () => {
+        if (infoUsuario.imagen && infoUsuario.imagen.uri) {
+            return <Image source={{ uri: infoUsuario.imagen.uri }} style={styles.perfilImagen} />;
+        } else {
+            return <Ionicons name="person" size={200} color="gray" />;
         }
     };
 
@@ -141,10 +156,11 @@ const Perfil = (props) => {
             <>
                 <Text style={[styles.title, modoOscuro && styles.titleModoOscuro, { marginTop: 30 }]}>¡Bienvenid@!</Text>
                 <View style={[styles.perfilImagenContainer, modoOscuro && styles.perfilImagenContainerModoOscuro]}>
-                    <TouchableOpacity onPress={seleccionarImagen}>
-                        <Text>Seleccionar imagen de perfil</Text>
+                    {imagenPerfil()}
+                    <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center'}]} onPress={seleccionarImagen}>
+                        <Ionicons name="pencil" size={15} color="gray" style={[{ marginRight:10}]}/>
+                        <Text style={{ color: modoOscuro ? 'white' : 'black' }} >Modificar imagen de perfil</Text>
                     </TouchableOpacity>
-                    <Image source={{ uri: response ? response.uri : null }} style={styles.perfilImagen} />
                 </View>
                 <View style={[{ flexDirection: 'row', alignItems: 'center', marginLeft: 15, paddingVertical: 15 }]}>
                     <View style={{ flex: 1 }}>
