@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,6 +7,7 @@ import Home from '../pages/Home';
 import { RestaurantesProvider } from '../contextos/RestaurantesContext';
 import Perfil from '../pages/Perfil';
 import { ModoContext } from '../contextos/ModoContext';
+import Reservas from '../pages/Reservas';
 
 const NavegadorComponent = () => {
 
@@ -23,7 +24,7 @@ const NavegadorComponent = () => {
     const ReservasScreen = () => {
         return (
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <Text>Reservas</Text>
+                <Reservas/>
             </View>
         );
     };
