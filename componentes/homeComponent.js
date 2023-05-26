@@ -2,6 +2,8 @@ import { Text, Image, StyleSheet, Dimensions } from 'react-native';
 import { ModoContext } from '../contextos/ModoContext';
 import { useContext } from 'react';
 import { Icon, Button } from 'react-native-elements';
+import AutContext from '../contextos/AutContext';
+import axios from 'axios';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -9,9 +11,18 @@ const HomeComponent = (props) => {
 
   const { modoOscuro } = useContext(ModoContext);
 
-  const handleReserva= () => {
-    //Añadir logica
-    console.log(props.nombre);
+  const { autenticacion } = useContext(AutContext);
+
+  const handleReserva = () => {
+    const reservaData = {
+      nombre: props.nombre
+    };
+    axios.post(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}/reservas.json?auth=` + autenticacion.idToken, reservaData)
+      .then((response) => {
+        alert('Reserva realizada con éxito.');
+      }).catch((event) => {
+        console.log(event);
+      })
   };
 
   return (
@@ -33,8 +44,8 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: 'bold',
-    textTransform:'uppercase',
-    margin:10
+    textTransform: 'uppercase',
+    margin: 10
   },
   nameModoOscuro: {
     fontSize: 16,
