@@ -71,7 +71,7 @@ const Perfil = (props) => {
     };
 
     const guardarCambios = () => {
-        axios.patch(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}.json`, { [propiedadEditada]: valorEditado, })
+        axios.patch(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}.json?auth=` + autenticacion.idToken, { [propiedadEditada]: valorEditado, })
             .then((response) => {
                 setInfoUsuario((prevInfoUsuario) => ({
                     ...prevInfoUsuario,
@@ -97,7 +97,7 @@ const Perfil = (props) => {
         await requestPermission();
         const result = await ImagePicker.launchImageLibraryAsync();
         if (!result.canceled) {
-            axios.put(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}/imagen.json`, result.assets[0])
+            axios.put(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}/imagen.json?auth=` + autenticacion.idToken, result.assets[0])
                 .then((response) => {
                     setInfoUsuario((prevInfoUsuario) => ({
                         ...prevInfoUsuario,

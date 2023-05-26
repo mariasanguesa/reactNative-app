@@ -14,7 +14,7 @@ const Registro = () => {
     const [nacimiento, setNacimiento] = useState('');
     const [nombre, setNombre] = useState('');
 
-    const { actualizarSesion } = useContext(AutContext);
+    const { autenticacion, actualizarSesion} = useContext(AutContext);
     const { modoOscuro } = useContext(ModoContext);
 
     const navigation = useNavigation();
@@ -24,7 +24,6 @@ const Registro = () => {
     const handleCalendario = () => {
         setShowCalendario(!showCalendario);
     };
-
     const handleFecha = (fecha) => {
         setNacimiento(fecha.format('DD-MM-YYYY'));
         setShowCalendario(false);
@@ -55,13 +54,14 @@ const Registro = () => {
                 actualizarSesion(response.data);
                 alert('Usuario registrado con éxito.');
                 const usuario = {
-                    imagen: '',
                     nombre: nombre,
+                    imagen:'',
                     fechaNacimiento: nacimiento,
                     correoElectronico: email,
                 };
+                console.log(usuario);
                 //Importante que sea un put para que firebase no cree un identificador aleatorio. Las comillas tampoco tienen que ser simples.
-                axios.put(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${response.data.localId}.json`, usuario)
+                axios.put(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${response.data.localId}.json?auth=` + autenticacion.idToken, usuario)
                     .then((response) => {
                         console.log('Usuario almacenado con éxito.');
                     })
