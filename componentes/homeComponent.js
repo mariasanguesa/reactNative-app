@@ -5,6 +5,7 @@ import { Icon, Button } from 'react-native-elements';
 import AutContext from '../contextos/AutContext';
 import axios from 'axios';
 import CalendarPicker from 'react-native-calendar-picker';
+import DatePickerIOS from '@react-native-community/datetimepicker';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -17,19 +18,26 @@ const HomeComponent = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [fecha, setFecha] = useState(new Date());
   const [numPersonas, setNumPersonas] = useState('');
+  const [hora, setHora] = useState(new Date());
 
   const handleReserva = () => {
+    // Para quedarme solo con las horas y minutos
+    const h = hora.getHours().toString().padStart(2, '0');
+    const m = hora.getMinutes().toString().padStart(2, '0');
+
     const reservaData = {
       nombre: props.nombre,
       fecha: fecha.format('DD-MM-YYYY'),
+      hora: `${h}:${m}`,
       comensales: numPersonas,
     };
-    axios.post(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}/reservas.json?auth=` + autenticacion.idToken, reservaData)
+    console.log(reservaData);
+    /*axios.post(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}/reservas.json?auth=` + autenticacion.idToken, reservaData)
       .then((response) => {
         alert('Reserva realizada con éxito.');
       }).catch((event) => {
         console.log(event);
-      })
+      })*/
     setModalVisible(false);
     setNumPersonas('');
   };
@@ -44,6 +52,11 @@ const HomeComponent = (props) => {
         <View style={styles.modalContainer}>
           <Text style={styles.modalTitle}>Detalles de tu reserva</Text>
           <CalendarPicker onDateChange={(fecha) => setFecha(fecha)} />
+          <DatePickerIOS
+            mode="time"
+            value={hora}
+            onChange={(event, hora) => setHora(hora)}
+          />
           <TextInput
             style={styles.input}
             placeholder="Número de comensales"
@@ -104,9 +117,10 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: 'lightgray',
     borderRadius: 5,
     padding: 10,
+    marginTop: 10
   },
 });
 
