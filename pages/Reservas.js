@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { ModoContext } from '../contextos/ModoContext';
-import { StyleSheet, View, Text, FlatList, SafeAreaView, Image } from 'react-native';
+import { StyleSheet, View, Text, FlatList, SafeAreaView, Image, TouchableOpacity, Alert } from 'react-native';
 import RestaurantesContext from '../contextos/RestaurantesContext';
 import AutContext from '../contextos/AutContext';
 import axios from 'axios';
@@ -27,6 +27,33 @@ const Reservas = () => {
         }
     }, [autenticacion]);
 
+    const cancelarReserva = (id) => {
+        Alert.alert(
+            'Confirmación',
+            '¿Estás seguro de querer eliminar la reserva?',
+            [{
+                text: 'Cancelar',
+                style: 'cancel',
+            },
+            {
+                text: 'Aceptar',
+                onPress: () => {
+                    axios.delete(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}/reservas/${id}.json?auth=`+ autenticacion.idToken)
+                        .then((response) => {
+                            const nuevasReservas = Object.entries(infoReservas).filter(([reservaId, reserva]) => reservaId !== id);
+                            const nuevasReservasObjeto = Object.fromEntries(nuevasReservas);
+                            setInfoReservas(nuevasReservasObjeto);
+                        })
+                        .catch((error) => {
+                            alert('No se ha podido eliminar la reserva de la base de datos.');
+                        })
+                },
+            },
+            ],
+        );
+
+    }
+
     let contenido = null;
 
     if (!autenticacion) {
@@ -49,10 +76,12 @@ const Reservas = () => {
                         const restaurante = restaurantes.find(
                             (restaurante) => restaurante.nombre === item.nombre
                         );
+                        const reservaId = Object.keys(infoReservas).find(
+                            (key) => infoReservas[key].nombre === item.nombre
+                        );
                         return (
                             <View style={[styles.reservaContainer, modoOscuro && styles.reservaContainerModoOscuro]}>
                                 <Image source={{ uri: restaurante.foto }} style={styles.fotoRestaurante} />
-
                                 <Text style={[styles.reservaNombre, modoOscuro && styles.reservaNombreModoOscuro]}>
                                     {item.nombre}
                                 </Text>
@@ -66,6 +95,9 @@ const Reservas = () => {
                                         <Text style={styles.reservaTexto}>{item.comensales}</Text>
                                     </View>
                                 </View>
+                                <TouchableOpacity style={styles.cancelarButton} onPress={() => cancelarReserva(reservaId)}>
+                                    <Text style={styles.cancelarButtonText}>Cancelar reserva</Text>
+                                </TouchableOpacity>
                             </View>
                         );
                     }}
@@ -96,7 +128,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
         color: 'black',
-        marginTop:20,
+        marginTop: 20,
     },
     tituloModoOscuro: {
         color: 'white',
@@ -158,7 +190,7 @@ const styles = StyleSheet.create({
     reservaDetalle: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent:'center',
+        justifyContent: 'center',
         marginTop: 10,
     },
     reservaTextoContainer: {
@@ -176,6 +208,18 @@ const styles = StyleSheet.create({
         height: 300,
         borderRadius: 10,
         marginBottom: 10,
+    },
+    cancelarButton: {
+        backgroundColor: '#FF0000',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginTop: 10,
+    },
+    cancelarButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
 });
 
