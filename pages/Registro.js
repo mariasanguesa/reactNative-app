@@ -132,7 +132,7 @@ const Registro = () => {
                             <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>Registro</Text>
                         </TouchableOpacity>
                     </View>
-                    <Modal animationType="slide" transparent={true} visible={showCalendario}>
+                    <Modal visible={showCalendario}>
                         <View style={[styles.modalContainer, modoOscuro && styles.modalContainerModoOscuro]}>
                             <View style={styles.calendarModalContent}>
                                 <CalendarPicker onDateChange={handleFecha} width={300} locale="es" />
