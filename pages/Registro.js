@@ -135,7 +135,7 @@ const Registro = () => {
                     <Modal visible={showCalendario}>
                         <View style={[styles.modalContainer, modoOscuro && styles.modalContainerModoOscuro]}>
                             <View style={styles.calendarModalContent}>
-                                <CalendarPicker onDateChange={handleFecha} width={300} locale="es" />
+                                <CalendarPicker maxDate={new Date()} onDateChange={handleFecha} width={300} locale="es" />
                             </View>
                             <TouchableOpacity style={[styles.closeButton, modoOscuro && styles.closeButtonModoOscuro]} onPress={handleCalendario}>
                                 <Text style={styles.closeButtonText}>Cerrar</Text>
