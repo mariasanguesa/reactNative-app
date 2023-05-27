@@ -1,6 +1,6 @@
-import { Text, Image, StyleSheet, Dimensions, Modal, View, TextInput, Alert } from 'react-native';
+import { Text, Image, StyleSheet, Dimensions, Modal, View, TextInput} from 'react-native';
 import { ModoContext } from '../contextos/ModoContext';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState} from 'react';
 import { Icon, Button } from 'react-native-elements';
 import AutContext from '../contextos/AutContext';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import DatePickerIOS from '@react-native-community/datetimepicker';
 import * as Notifications from 'expo-notifications';
 
 const windowWidth = Dimensions.get('window').width;
+
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -16,6 +17,7 @@ Notifications.setNotificationHandler({
     shouldSetBadge: false,
   }),
 });
+
 const HomeComponent = (props) => {
 
   const { modoOscuro } = useContext(ModoContext);
@@ -55,7 +57,6 @@ const HomeComponent = (props) => {
     const h = hora.getHours().toString().padStart(2, '0');
     const m = hora.getMinutes().toString().padStart(2, '0');
 
-
     const reservaData = {
       nombre: props.nombre,
       fecha: fecha,
@@ -67,7 +68,7 @@ const HomeComponent = (props) => {
       .then((response) => {
         alert('Reserva realizada con éxito.');
       }).catch((event) => {
-        console.log(event);
+        console.log('error:'+event);
       })
 
     setModalVisible(false);
