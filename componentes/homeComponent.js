@@ -1,6 +1,6 @@
-import { Text, Image, StyleSheet, Dimensions, Modal, View, TextInput} from 'react-native';
+import { Text, Image, StyleSheet, Dimensions, Modal, View, TextInput } from 'react-native';
 import { ModoContext } from '../contextos/ModoContext';
-import { useContext, useState} from 'react';
+import { useContext, useState } from 'react';
 import { Icon, Button } from 'react-native-elements';
 import AutContext from '../contextos/AutContext';
 import axios from 'axios';
@@ -66,15 +66,19 @@ const HomeComponent = (props) => {
 
     axios.post(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}/reservas.json?auth=` + autenticacion.idToken, reservaData)
       .then((response) => {
-        alert('Reserva realizada con éxito.');
       }).catch((event) => {
-        console.log('error:'+event);
+        console.log('error:' + event);
       })
 
     setModalVisible(false);
     setNumPersonas('');
     setFecha(null);
     setCamposSinRellenar([]);
+
+    // Calcular los milisegundos que quedan para que llegue la cita
+    const fechaActual = new Date();
+    const fechaObjetivo = new Date(fecha.substring(6, 10), fecha.substring(3, 5) - 1, fecha.substring(0, 2), `${h}`, `${m}`);
+    const diferenciaMs = fechaObjetivo.getTime() - fechaActual.getTime();
 
     Notifications.scheduleNotificationAsync({
       content: {
@@ -83,9 +87,24 @@ const HomeComponent = (props) => {
       },
       trigger: null,
     });
+
+    //Notificación programada para recordar la cita una hora antes
+    Notifications.scheduleNotificationAsync({
+      content: {
+        title: '¡No olvides tu cita!',
+        body: "Te recordamos que dentro de una hora tienes una reserva en " + props.nombre + " para " + numPersonas + " personas. ¡Esperamos que lo disfrutes!",
+      },
+      trigger: {
+        seconds: Math.floor((diferenciaMs-3600000)/ 1000),
+      },
+    });
   };
 
-
+  // Para no poder hacer reservas fuera del horario de 12.00 a 22.00
+  const currentDate = new Date();
+  const minTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 12, 0, 0); 
+  const maxTime = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate(), 22, 0, 0); 
+  
   return (
     <>
       <Text style={[styles.name, modoOscuro && styles.nameModoOscuro]}>{props.nombre}</Text>
@@ -100,6 +119,9 @@ const HomeComponent = (props) => {
             mode="time"
             value={hora}
             onChange={(event, hora) => setHora(hora)}
+            minuteInterval={10}
+            minimumDate={minTime} 
+            maximumDate={maxTime}
           />
           {camposSinRellenar.includes('numPersonas') && <Text style={styles.errorText}>Indica el número de compensales</Text>}
           <TextInput

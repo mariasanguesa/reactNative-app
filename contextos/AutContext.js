@@ -23,7 +23,7 @@ export const AutProvider = ({ children }) => {
         recuperarSesion();
     }, []);
 
-    // Cambiar los datos de la sesión, por ejemplo al hacer login tienen que modificarse
+    // Cambiar los datos de la sesión, por ejemplo al hacer login y registrarse tienen que modificarse
     const actualizarSesion = async (datos) => {
         try {
             setAutenticacion(datos);

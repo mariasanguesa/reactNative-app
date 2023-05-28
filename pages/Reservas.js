@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { ModoContext } from '../contextos/ModoContext';
-import { StyleSheet, View, Text, FlatList, SafeAreaView, Image, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, View, Text, FlatList, SafeAreaView, Image, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import RestaurantesContext from '../contextos/RestaurantesContext';
 import AutContext from '../contextos/AutContext';
 import axios from 'axios';
@@ -15,15 +15,20 @@ const Reservas = () => {
 
     const { autenticacion } = useContext(AutContext);
 
+    const [isLoading, setIsLoading] = useState(false); // Variable de estado para controlar el estado de carga
+
     useEffect(() => {
         if (autenticacion) {
+            setIsLoading(true); // Establecer el estado de carga en true
             axios.get('https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios.json')
                 .then((response) => {
                     setInfoReservas(response.data[autenticacion.localId].reservas);
+                    setIsLoading(false); 
                 })
                 .catch((error) => {
-                    console.error(error);
-                });
+                    setIsLoading(false); 
+                })
+
         }
     }, [autenticacion]);
 
@@ -118,7 +123,11 @@ const Reservas = () => {
 
     return (
         <SafeAreaView style={[styles.container, modoOscuro && styles.containerModoOscuro]}>
-            {contenido}
+            {isLoading ? (
+                <ActivityIndicator marginTop={200} size="large" color="gray" />
+            ) : (
+                contenido
+            )}
         </SafeAreaView>
     );
 

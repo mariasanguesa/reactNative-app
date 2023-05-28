@@ -1,6 +1,6 @@
 import { ModoContext } from '../contextos/ModoContext';
 import { useContext, useState, useEffect } from 'react';
-import { Modal, StyleSheet, View, Text, Switch, TextInput, TouchableOpacity, SafeAreaView, Image } from 'react-native';
+import { Modal, StyleSheet, View, Text, Switch, TextInput, TouchableOpacity, SafeAreaView, Image, Alert, ActivityIndicator } from 'react-native';
 import axios from 'axios';
 import AutContext from '../contextos/AutContext';
 import { API_KEY } from '@env';
@@ -16,17 +16,22 @@ const Perfil = (props) => {
 
     // Para que las credenciales sean accesibles en todos los componentes se almacenan en un contexto. Que con el login se modificará
     const { autenticacion, actualizarSesion, cerrarSesion } = useContext(AutContext);
-
     const [infoUsuario, setInfoUsuario] = useState([]);
 
+    const [isLoading, setIsLoading] = useState(true);
+
+
     useEffect(() => {
+        setIsLoading(true);
         if (autenticacion) {
             axios.get('https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios.json')
                 .then((response) => {
                     setInfoUsuario(response.data[autenticacion.localId]);
+                    setIsLoading(false);
                 })
                 .catch((error) => {
-                    console.log('Error');
+                    console.log('Error cargando usuario');
+                    setIsLoading(false);
                 });
         }
     }, [autenticacion]);
@@ -80,20 +85,48 @@ const Perfil = (props) => {
                 cerrarModal();
             })
             .catch((error) => {
-                console.log('Error');
+                console.log('Error editando usuario');
             });
     };
 
     // Permiso para acceder a la galeria
     const requestPermission = async () => {
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        const { status } = await ImagePicker.requestCameraPermissionsAsync();
         if (status !== 'granted') {
+            // Permiso de la cámara denegado, muestra un mensaje o realiza una acción alternativa
+            return;
+        }
+
+        const { status: mediaStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (mediaStatus !== 'granted') {
+            // Permiso de la galería denegado, muestra un mensaje o realiza una acción alternativa
             return;
         }
     };
 
+
     // Abrir la biblioteca de imágenes para seleccionar una imagen
     const seleccionarImagen = async () => {
+        await requestPermission();
+
+        Alert.alert(
+            'Seleccionar imagen',
+            'Elige una opción',
+            [
+                {
+                    text: 'Tomar foto',
+                    onPress: tomarFoto,
+                },
+                {
+                    text: 'Acceder a la galería',
+                    onPress: abrirGaleria,
+                },
+            ],
+            { cancelable: true }
+        );
+    };
+
+    const abrirGaleria = async () => {
         await requestPermission();
         const result = await ImagePicker.launchImageLibraryAsync();
         if (!result.canceled) {
@@ -106,6 +139,26 @@ const Perfil = (props) => {
                 })
                 .catch((error) => {
                     console.error('Error.');
+                });
+        }
+    }
+
+    const tomarFoto = async () => {
+        await requestPermission();
+
+        const result = await ImagePicker.launchCameraAsync();
+
+        if (!result.canceled) {
+            axios
+                .put(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}/imagen.json?auth=` + autenticacion.idToken, result.assets[0])
+                .then((response) => {
+                    setInfoUsuario((prevInfoUsuario) => ({
+                        ...prevInfoUsuario,
+                        ['imagen']: result.assets[0],
+                    }));
+                })
+                .catch((error) => {
+                    console.error('Error ');
                 });
         }
     };
@@ -157,8 +210,8 @@ const Perfil = (props) => {
                 <Text style={[styles.title, modoOscuro && styles.titleModoOscuro, { marginTop: 30 }]}>¡Bienvenid@!</Text>
                 <View style={[styles.perfilImagenContainer, modoOscuro && styles.perfilImagenContainerModoOscuro]}>
                     {imagenPerfil()}
-                    <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center'}]} onPress={seleccionarImagen}>
-                        <Ionicons name="pencil" size={15} color="gray" style={[{ marginRight:10}]}/>
+                    <TouchableOpacity style={[{ flexDirection: 'row', alignItems: 'center' }]} onPress={seleccionarImagen}>
+                        <Ionicons name="pencil" size={15} color="gray" style={[{ marginRight: 10 }]} />
                         <Text style={{ color: modoOscuro ? 'white' : 'black' }} >Modificar imagen de perfil</Text>
                     </TouchableOpacity>
                 </View>
@@ -206,7 +259,11 @@ const Perfil = (props) => {
 
     return (
         <SafeAreaView style={[styles.container, modoOscuro && styles.containerModoOscuro]}>
-            {contenido}
+            {isLoading ? (
+                <ActivityIndicator marginTop={200} size="large" color="gray" />
+            ) : (
+                contenido
+            )}
             <View style={styles.switchContainer}>
                 <Text style={[styles.texto, modoOscuro && styles.textoModoOscuro]}>
                     {modoOscuro ? 'Modo claro ' : 'Modo oscuro '}
