@@ -52,8 +52,21 @@ const Registro = () => {
 
         axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + API_KEY, authData)
             .then((response) => {
+                const usuario = {
+                    nombre: nombre,
+                    fechaNacimiento: nacimiento,
+                    correoElectronico: email,
+                };
+                //Importante que sea un put para que firebase no cree un identificador aleatorio. Las comillas tampoco tienen que ser simples.
+                axios.put(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${response.data.localId}.json?auth=` + response.data.idToken, usuario)
+                    .then((response1) => {
+                        console.log('Usuario almacenado con éxito.');
+                        navigation.navigate('Perfil');
+                    })
+                    .catch((error) => {
+                        console.error('Error al almacenar el usuario: ', error);
+                    });
                 actualizarSesion(response.data);
-                alert('Usuario registrado con éxito.');
             })
             .catch((error) => {
                 alert('Error');
@@ -63,22 +76,7 @@ const Registro = () => {
 
     useEffect(() => {
         if (autenticacion) {
-            const usuario = {
-                nombre: nombre,
-                fechaNacimiento: nacimiento,
-                correoElectronico: email,
-                imagen: '',
-                reservas: []
-            };
-            //Importante que sea un put para que firebase no cree un identificador aleatorio. Las comillas tampoco tienen que ser simples.
-            axios.put(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${autenticacion.localId}.json?auth=` + autenticacion.idToken, usuario)
-                .then((response) => {
-                    console.log('Usuario almacenado con éxito.');
-                    navigation.navigate('Perfil');
-                })
-                .catch((error) => {
-                    console.error('Error al almacenar el usuario: ', error);
-                });
+
         }
     }, [autenticacion]);
 

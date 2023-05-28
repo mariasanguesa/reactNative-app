@@ -20,7 +20,6 @@ const Perfil = (props) => {
 
     const [isLoading, setIsLoading] = useState(true);
 
-
     useEffect(() => {
         setIsLoading(true);
         if (autenticacion) {
@@ -33,6 +32,8 @@ const Perfil = (props) => {
                     console.log('Error cargando usuario');
                     setIsLoading(false);
                 });
+        }else{
+            setIsLoading(false);
         }
     }, [autenticacion]);
 
