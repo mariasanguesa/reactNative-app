@@ -7,6 +7,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import FavoritesContext from '../contextos/FavContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const DetalleRestaurante = () => {
@@ -15,11 +16,19 @@ const DetalleRestaurante = () => {
   const [restaurante, setRestaurante] = useState(null);
   const [loading, setLoading] = useState(true);
   const [reviews, setReseñas] = useState(null);
-  const { favorites, addFavorite } = useContext(FavoritesContext);
+  const { favorites, addFavorite, removeFavorite } = useContext(FavoritesContext);
   const [favorito, setFavorito] = useState(false);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const navigation = useNavigation();
+
+  
  
+  useEffect(() => {
+    
+    obtenerInformacionRestaurante(restauranteId);
+    obtenerReseñas(restauranteId);
+    
+  }, []);
   
   const handleGoBack = () => {
     navigation.goBack();
@@ -31,34 +40,30 @@ const DetalleRestaurante = () => {
     setMostrarFormulario(!mostrarFormulario);
   };
 
-  const toggleFavorito = () => {
-    setFavorito(!favorito);
-    if (favorito){
-      const restaurantesFavoritos = {
-    
-          id: restaurante.id,
+  const toggleFavorito = async () => {
+  
+    if (!favorito && !isFavorite) {
+      const restauranteFavorito = {
+        [restaurante.id]: {
           nombre: restaurante.name,
           imagen: restaurante.image_url
-      
-      }
-      addFavorite(restaurantesFavoritos);
+        }
+      };
+      addFavorite(restauranteFavorito);
     }
+  
+    if (favorito && isFavorite) {
+      removeFavorite(restauranteId);
+    }
+  
+    setFavorito(!favorito);
   };
   
-  useEffect(() => {
-    obtenerInformacionRestaurante(restauranteId);
-    obtenerReseñas(restauranteId);
-    
-  }, []);
-
-
   const obtenerInformacionRestaurante = async (restauranteId) => {
-    console.log(restauranteId);
     try {
       const response = await fetch(`http://192.168.1.133:3000/restaurantes/${restauranteId}`);
       const restauranteData = await response.json();
       setRestaurante(restauranteData);
-      console.log(restauranteData);
       setLoading(false);
     } catch (error) {
       console.error(error);
@@ -74,7 +79,6 @@ const DetalleRestaurante = () => {
         setReseñas(data.reviews);
         setLoading(false);
       } else {
-        console.log(response);
         throw new Error('Error al obtener las reseñas del restaurante');
       }
     } catch (error) {

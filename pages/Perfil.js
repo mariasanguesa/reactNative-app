@@ -113,6 +113,7 @@ const Perfil = (props) => {
         if (infoUsuario.imagen && infoUsuario.imagen.uri) {
             return <Image source={{ uri: infoUsuario.imagen.uri }} style={styles.perfilImagen} />;
         } else {
+            console.log('entro');
             return <Ionicons name="person" size={200} color="gray" />;
         }
     };
