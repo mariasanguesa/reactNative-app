@@ -1,5 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNRestart from 'react-native-restart';
 
 const AutContext = createContext();
 
@@ -23,7 +24,7 @@ export const AutProvider = ({ children }) => {
         recuperarSesion();
     }, []);
 
-    // Cambiar los datos de la sesión, por ejemplo al hacer login tienen que modificarse
+    // Cambiar los datos de la sesión, por ejemplo al hacer login y registrarse tienen que modificarse
     const actualizarSesion = async (datos) => {
         try {
             setAutenticacion(datos);
@@ -36,8 +37,9 @@ export const AutProvider = ({ children }) => {
     // Cerrar la sesión y eliminar los datos
     const cerrarSesion = async () => {
         try {
-            setAutenticacion(null);
-            await AsyncStorage.removeItem('autenticacion');
+
+            // Recarga la aplicación
+            RNRestart.Restart();
         } catch (error) {
             console.log('Error al cerrar la sesión:', error);
         }

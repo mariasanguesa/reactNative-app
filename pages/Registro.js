@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, SafeAreaView, Modal, Dimensions } from 'react-native';
 import axios from 'axios';
 import AutContext from '../contextos/AutContext';
@@ -14,7 +14,7 @@ const Registro = () => {
     const [nacimiento, setNacimiento] = useState('');
     const [nombre, setNombre] = useState('');
 
-    const { autenticacion, actualizarSesion} = useContext(AutContext);
+    const { autenticacion, actualizarSesion } = useContext(AutContext);
     const { modoOscuro } = useContext(ModoContext);
 
     const navigation = useNavigation();
@@ -43,6 +43,7 @@ const Registro = () => {
             setCamposSinRellenar(camposSinRellenar);
             return;
         }
+
         const authData = {
             email: email,
             password: password,
@@ -51,36 +52,33 @@ const Registro = () => {
 
         axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + API_KEY, authData)
             .then((response) => {
-                actualizarSesion(response.data);
-                alert('Usuario registrado con éxito.');
                 const usuario = {
                     nombre: nombre,
-                    imagen:'',
                     fechaNacimiento: nacimiento,
                     correoElectronico: email,
                 };
-                console.log(usuario);
                 //Importante que sea un put para que firebase no cree un identificador aleatorio. Las comillas tampoco tienen que ser simples.
-                axios.put(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${response.data.localId}.json?auth=` + autenticacion.idToken, usuario)
-                    .then((response) => {
+                axios.put(`https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/usuarios/${response.data.localId}.json?auth=` + response.data.idToken, usuario)
+                    .then((response1) => {
                         console.log('Usuario almacenado con éxito.');
+                        navigation.navigate('Perfil');
                     })
                     .catch((error) => {
                         console.error('Error al almacenar el usuario: ', error);
                     });
-
-                navigation.navigate('Perfil');
+                actualizarSesion(response.data);
             })
             .catch((error) => {
                 alert('Error');
             });
-
-        setEmail('');
-        setPassword('');
-        setNacimiento('');
-        setNombre('');
         setCamposSinRellenar([]);
     };
+
+    useEffect(() => {
+        if (autenticacion) {
+
+        }
+    }, [autenticacion]);
 
     return (
         <>
@@ -90,7 +88,7 @@ const Registro = () => {
                     <View style={styles.formContainer}>
                         {camposSinRellenar.includes('nombre') && <Text style={styles.errorText}>Campo obligatorio</Text>}
                         <TextInput
-                            style={[styles.input,modoOscuro && styles.inputModoOscuro,camposSinRellenar.includes('nombre') && styles.inputError]}
+                            style={[styles.input, modoOscuro && styles.inputModoOscuro, camposSinRellenar.includes('nombre') && styles.inputError]}
                             placeholder="Nombre completo"
                             placeholderTextColor={modoOscuro ? 'white' : 'black'}
                             value={nombre}
@@ -100,8 +98,8 @@ const Registro = () => {
                         <View style={styles.inputContainer}>
                             {camposSinRellenar.includes('nacimiento') && <Text style={styles.errorText}>Campo obligatorio</Text>}
                             <TextInput
-                            style={[styles.input,modoOscuro && styles.inputModoOscuro,camposSinRellenar.includes('nacimiento') && styles.inputError]}
-                            placeholder="Fecha de nacimiento"
+                                style={[styles.input, modoOscuro && styles.inputModoOscuro, camposSinRellenar.includes('nacimiento') && styles.inputError]}
+                                placeholder="Fecha de nacimiento"
                                 placeholderTextColor={modoOscuro ? 'white' : 'black'}
                                 value={nacimiento}
                                 onChangeText={setNacimiento}
@@ -112,7 +110,7 @@ const Registro = () => {
                         </View>
                         {camposSinRellenar.includes('email') && <Text style={styles.errorText}>Campo obligatorio</Text>}
                         <TextInput
-                            style={[styles.input,modoOscuro && styles.inputModoOscuro,camposSinRellenar.includes('email') && styles.inputError]}
+                            style={[styles.input, modoOscuro && styles.inputModoOscuro, camposSinRellenar.includes('email') && styles.inputError]}
                             placeholder="Correo electrónico"
                             placeholderTextColor={modoOscuro ? 'white' : 'black'}
                             value={email}
@@ -121,7 +119,7 @@ const Registro = () => {
                         />
                         {camposSinRellenar.includes('password') && <Text style={styles.errorText}>Campo obligatorio</Text>}
                         <TextInput
-                            style={[styles.input,modoOscuro && styles.inputModoOscuro,camposSinRellenar.includes('password') && styles.inputError]}
+                            style={[styles.input, modoOscuro && styles.inputModoOscuro, camposSinRellenar.includes('password') && styles.inputError]}
                             placeholderTextColor={modoOscuro ? 'white' : 'black'}
                             placeholder="Contraseña"
                             value={password}

@@ -15,9 +15,9 @@ const App = () => {
 
 
   return (
-    <FavoritesProvider>
     <ModoProvider>
       <AutProvider>
+      <FavoritesProvider>
         <NavigationContainer>
           <Stack.Navigator>
             <Stack.Screen name="Navegador" component={NavegadorComponent} options={{ headerShown: false }} />
@@ -27,9 +27,9 @@ const App = () => {
             <Stack.Screen name="Favoritos" component={Favoritos} options={{ headerShown: false }} />
           </Stack.Navigator>
         </NavigationContainer>
+        </FavoritesProvider>
       </AutProvider>
     </ModoProvider>
-    </FavoritesProvider>
   )
 }
 

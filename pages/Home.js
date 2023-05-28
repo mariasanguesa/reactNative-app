@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import RestaurantesContext from '../contextos/RestaurantesContext';
 import ProductoHome from "../componentes/homeComponent";
 import { ModoContext } from '../contextos/ModoContext';
+import AutContext from '../contextos/AutContext';
 
 
 const Home = () => {
