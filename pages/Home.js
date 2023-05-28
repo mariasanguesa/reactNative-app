@@ -1,30 +1,38 @@
 import { useEffect, useState, useContext } from 'react';
-import { View, Text, StyleSheet, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from "@expo/vector-icons";
-import axios from "axios";
+import { useNavigation } from '@react-navigation/native';
 import RestaurantesContext from '../contextos/RestaurantesContext';
 import ProductoHome from "../componentes/homeComponent";
 import { ModoContext } from '../contextos/ModoContext';
 
+
 const Home = () => {
+
   // El contexto de restaurantes está creado para que se pueda acceder a el desde cualquier punto de la aplicación habiendo hecho solo una llamada a la base de datos
   const { restaurantes, setRestaurantes } = useContext(RestaurantesContext);
   const { modoOscuro } = useContext(ModoContext);
 
+
+  const obtenerInformacionRestaurante = async () => {
+    try {
+      const response = await fetch('http://192.168.1.133:3000/restaurantes');
+      const restauranteData = await response.json();
+      setRestaurantes(restauranteData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
   useEffect(() => {
-    axios.get('https://reactnative-app-5299e-default-rtdb.europe-west1.firebasedatabase.app/Restaurantes.json')
-      .then((response) => {
-        const arrayRestaurantes = Object.keys(response.data).map((id) => ({
-          id: id,
-          nombre: response.data[id].nombre,
-          foto: response.data[id].src,
-        }));
-        setRestaurantes(arrayRestaurantes);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    obtenerInformacionRestaurante();
   }, []);
+
+  const array = Object.keys(restaurantes).map((clave) => {
+    return {
+      restaurantes: restaurantes[clave]
+    };
+  });
 
   const [busqueda, setBusqueda] = useState("");
   const [productosFiltrados, setProductosFiltrados] = useState([]);
@@ -35,21 +43,29 @@ const Home = () => {
   };
 
   const filtrar = (terminoBusqueda) => {
-    const arrayFiltrados = restaurantes.filter((elemento) =>
-      elemento.nombre.toUpperCase().includes(terminoBusqueda.toUpperCase())
+    const arrayFiltrados = array[0].restaurantes.filter((elemento) =>
+      elemento.name.toUpperCase().includes(terminoBusqueda.toUpperCase())
     );
     setProductosFiltrados(arrayFiltrados);
   };
 
   let contenido = null;
 
+  const navigation = useNavigation();
+
+  const handlePress = (restauranteId) => {
+    navigation.navigate('DetalleRestaurante', { restauranteId: restauranteId });
+  };
+
   if (productosFiltrados.length > 0) {
     contenido = (
       <ScrollView>
         {productosFiltrados.map((elemento) => (
+          <TouchableOpacity  onPress={() => handlePress(elemento.id)}>
           <View key={elemento.id} style={[styles.card, modoOscuro && styles.cardOscuro]}>
-            <ProductoHome nombre={elemento.nombre} src={elemento.foto} />
+            <ProductoHome key={elemento.id} nombre={elemento.name} src={elemento.image_url}/>
           </View>
+          </TouchableOpacity>
         ))}
       </ScrollView>
     );
@@ -61,13 +77,15 @@ const Home = () => {
         </View>
       );
     } else {
-      if (restaurantes.length > 0) {
+      if (array.length > 0) {
         contenido = (
           <ScrollView>
-            {restaurantes.map((elemento) => (
+            {array[0].restaurantes.map((elemento) => (
+              <TouchableOpacity  onPress={() => handlePress(elemento.id)}>
               <View key={elemento.id} style={[styles.card, modoOscuro && styles.cardOscuro]}>
-                <ProductoHome nombre={elemento.nombre} src={elemento.foto} />
+                <ProductoHome key={elemento.id} nombre={elemento.name} src={elemento.image_url}/>
               </View>
+              </TouchableOpacity>
             ))}
           </ScrollView>
         );

@@ -1,7 +1,6 @@
 import { useContext, useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity, SafeAreaView, Modal, Dimensions } from 'react-native';
 import axios from 'axios';
-import { API_KEY } from '@env';
 import AutContext from '../contextos/AutContext';
 import { ModoContext } from '../contextos/ModoContext';
 import { useNavigation } from '@react-navigation/native';

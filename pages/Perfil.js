@@ -3,7 +3,6 @@ import { useContext, useState, useEffect } from 'react';
 import { Modal, StyleSheet, View, Text, Switch, TextInput, TouchableOpacity, SafeAreaView, Image } from 'react-native';
 import axios from 'axios';
 import AutContext from '../contextos/AutContext';
-import { API_KEY } from '@env';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 

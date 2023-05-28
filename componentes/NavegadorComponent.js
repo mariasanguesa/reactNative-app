@@ -8,6 +8,7 @@ import { RestaurantesProvider } from '../contextos/RestaurantesContext';
 import Perfil from '../pages/Perfil';
 import { ModoContext } from '../contextos/ModoContext';
 import Reservas from '../pages/Reservas';
+import Favoritos from '../pages/Favoritos';
 
 const NavegadorComponent = () => {
 
@@ -45,6 +46,22 @@ const NavegadorComponent = () => {
         );
     };
 
+    const Favorito = () => {
+        return (
+            <View>
+                <Favoritos />
+            </View>
+        );
+    };
+
+    const DetalleRestaurante = () => {
+        return (
+            <View>
+                <DetalleRestaurante />
+            </View>
+        );
+    };
+
     const Tab = createBottomTabNavigator();
 
     return (
@@ -61,6 +78,8 @@ const NavegadorComponent = () => {
                             iconName = focused ? 'book' : 'book-outline';
                         } else if (route.name === 'Perfil') {
                             iconName = focused ? 'person-circle' : 'person-circle-outline';
+                        } else if (route.name === 'Favoritos'){
+                            iconName = focused ? 'star' : 'star-outline';
                         }
                         return <Ionicons name={iconName} size={size} color={color} />;
                     },
@@ -72,6 +91,7 @@ const NavegadorComponent = () => {
                 <Tab.Screen name="Home" component={HomeScreen} />
                 <Tab.Screen name="Reservas" component={ReservasScreen} />
                 <Tab.Screen name="Perfil" component={PerfilScreen} />
+                <Tab.Screen name="Favoritos" component={Favorito} />
             </Tab.Navigator>
         </RestaurantesProvider>
     );

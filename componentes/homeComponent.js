@@ -1,11 +1,13 @@
 import { Text, Image, StyleSheet, Dimensions, Modal, View, TextInput } from 'react-native';
 import { ModoContext } from '../contextos/ModoContext';
 import { useContext, useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { Icon, Button } from 'react-native-elements';
 import AutContext from '../contextos/AutContext';
 import axios from 'axios';
 import CalendarPicker from 'react-native-calendar-picker';
 import DatePickerIOS from '@react-native-community/datetimepicker';
+import DetalleRestaurante from './Restaurantes';
 
 const windowWidth = Dimensions.get('window').width;
 
@@ -41,6 +43,7 @@ const HomeComponent = (props) => {
     setModalVisible(false);
     setNumPersonas('');
   };
+
 
   console.log(modalVisible);
   return (
