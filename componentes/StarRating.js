@@ -9,14 +9,14 @@ const StarRating = ({ rating }) => {
   return (
     <View style={styles.container}>
       {/* Estrellas llenas */}
-      {Array(filledStars).fill(
-        <Icon name="star" size={20} color="gold" />
-      )}
+      {Array(filledStars).fill().map((_, index) => (
+        <Icon key={`filled-${index}`} name="star" size={20} color="gold" />
+      ))}
 
       {/* Estrellas vacías */}
-      {Array(remainingStars).fill(
-        <Icon name="star" size={20} color="gray" />
-      )}
+      {Array(remainingStars).fill().map((_, index) => (
+        <Icon key={`empty-${index}`} name="star" size={20} color="gray" />
+      ))}
     </View>
   );
 };

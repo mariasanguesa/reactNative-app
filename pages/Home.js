@@ -5,8 +5,6 @@ import { useNavigation } from '@react-navigation/native';
 import RestaurantesContext from '../contextos/RestaurantesContext';
 import ProductoHome from "../componentes/homeComponent";
 import { ModoContext } from '../contextos/ModoContext';
-import AutContext from '../contextos/AutContext';
-
 
 const Home = () => {
 
@@ -17,14 +15,14 @@ const Home = () => {
 
   const obtenerInformacionRestaurante = async () => {
     try {
-      const response = await fetch('http://192.168.1.133:3000/restaurantes');
+      const response = await fetch('http://172.20.10.2:3000/restaurantes');
       const restauranteData = await response.json();
       setRestaurantes(restauranteData);
     } catch (error) {
       console.error(error);
     }
   };
-  
+
   useEffect(() => {
     obtenerInformacionRestaurante();
   }, []);
@@ -62,10 +60,10 @@ const Home = () => {
     contenido = (
       <ScrollView>
         {productosFiltrados.map((elemento) => (
-          <TouchableOpacity  onPress={() => handlePress(elemento.id)}>
-          <View key={elemento.id} style={[styles.card, modoOscuro && styles.cardOscuro]}>
-            <ProductoHome key={elemento.id} nombre={elemento.name} src={elemento.image_url}/>
-          </View>
+          <TouchableOpacity key={elemento.id} onPress={() => handlePress(elemento.id)}>
+            <View style={[styles.card, modoOscuro && styles.cardOscuro]}>                  
+              <ProductoHome nombre={elemento.name} src={elemento.image_url} />
+            </View>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -74,7 +72,7 @@ const Home = () => {
     if (busqueda) {
       contenido = (
         <View style={styles.noCoincidenciasText}>
-          <Text>¡Lo sentimos! No hay coincidencias con tu búsqueda.</Text>
+          <Text style={{ color: modoOscuro ? 'white' : 'black' }}>¡Lo sentimos! No hay coincidencias con tu búsqueda.</Text>
         </View>
       );
     } else {
@@ -82,10 +80,10 @@ const Home = () => {
         contenido = (
           <ScrollView>
             {array[0].restaurantes.map((elemento) => (
-              <TouchableOpacity  onPress={() => handlePress(elemento.id)}>
-              <View key={elemento.id} style={[styles.card, modoOscuro && styles.cardOscuro]}>
-                <ProductoHome key={elemento.id} nombre={elemento.name} src={elemento.image_url}/>
-              </View>
+              <TouchableOpacity key={elemento.id} onPress={() => handlePress(elemento.id)}>
+                <View  style={[styles.card, modoOscuro && styles.cardOscuro]}>
+                  <ProductoHome nombre={elemento.name} src={elemento.image_url} />
+                </View>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -98,7 +96,7 @@ const Home = () => {
     <View style={[styles.container, modoOscuro && styles.containerModoOscuro]}>
       <Text style={[styles.title, modoOscuro && styles.titleModoOscuro]}>Restaurantes disponibles</Text>
       <View style={styles.searchContainer}>
-        <MaterialIcons name="search"  style={[styles.searchIcon, modoOscuro && styles.searchIconOscuro]}/>
+        <MaterialIcons name="search" style={[styles.searchIcon, modoOscuro && styles.searchIconOscuro]} />
         <TextInput
           style={[styles.input, modoOscuro && styles.inputModoOscuro]}
           value={busqueda}
@@ -114,76 +112,77 @@ const Home = () => {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white', 
-        alignItems: 'center',
-        justifyContent: 'center',
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  containerModoOscuro: {
+    backgroundColor: 'black',
+  },
+  title: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 10,
+    marginTop: 50,
+    color: 'black',
+  },
+  titleModoOscuro: {
+    fontSize: 20,
+    textAlign: 'center',
+    marginBottom: 10,
+    marginTop: 50,
+    color: 'white',
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  searchIcon: {
+    fontSize: 24,
+    marginRight: 10,
+    color: 'black',
+  },
+  searchIconOscuro: {
+    color: 'white',
+  },
+  input: {
+    flex: 2,
+    color: 'black',
+  },
+  inputModoOscuro: {
+    color: 'white',
+  },
+  card: {
+    padding: 10,
+    marginVertical: 10,
+    backgroundColor: 'white',
+    borderRadius: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
     },
-    containerModoOscuro: {
-        backgroundColor: 'black',
-    },
-    title: {
-        fontSize: 20,
-        textAlign: 'center',
-        marginBottom: 10,
-        marginTop: 50,
-        color: 'black',
-    },
-    titleModoOscuro: {
-        fontSize: 20,
-        textAlign: 'center',
-        marginBottom: 10,
-        marginTop: 50,
-        color: 'white',
-    },
-    searchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: '#ccc',
-        borderRadius: 5,
-        paddingHorizontal: 10,
-        marginBottom: 10,
-    },
-    searchIcon: {
-      fontSize: 24,
-      marginRight: 10,
-      color: 'black',
-    },
-    searchIconOscuro: {
-      color: 'white',
-    },
-    input: {
-      flex: 2,
-      color: 'black',
-    },
-    inputModoOscuro: {
-      color: 'white',
-    },
-    card: {
-        padding: 10,
-        marginVertical: 10,
-        backgroundColor: 'white',
-        borderRadius: 5,
-        shadowColor: '#000',
-        shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-    },
-    cardOscuro: {
-        backgroundColor: 'gray',
-    },
-    noCoincidenciasText: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: 50,
-    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  cardOscuro: {
+    backgroundColor: 'gray',
+  },
+  noCoincidenciasText: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 50,
+  },
+
 });
 
 export default Home;

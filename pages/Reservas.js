@@ -15,7 +15,7 @@ const Reservas = () => {
 
     const { autenticacion } = useContext(AutContext);
 
-    const [isLoading, setIsLoading] = useState(false); // Variable de estado para controlar el estado de carga
+    const [isLoading, setIsLoading] = useState(false); 
 
     useEffect(() => {
         if (autenticacion) {
@@ -87,15 +87,17 @@ const Reservas = () => {
                         data={Object.values(infoReservas)}
                         keyExtractor={(item, index) => index.toString()}
                         renderItem={({ item }) => {
-                            const restaurante = restaurantes.find(
-                                (restaurante) => restaurante.nombre === item.nombre
+                            const restaurante = restaurantes.businesses.find(
+                                (restaurante) => restaurante.name === item.nombre
                             );
                             const reservaId = Object.keys(infoReservas).find(
                                 (key) => infoReservas[key].nombre === item.nombre
                             );
+                            console.log(restaurante.image_url);
+
                             return (
                                 <View style={[styles.reservaContainer, modoOscuro && styles.reservaContainerModoOscuro]}>
-                                    <Image source={{ uri: restaurante.foto }} style={styles.fotoRestaurante} />
+                                    <Image source={{ uri: restaurante.image_url }} style={styles.fotoRestaurante} />
                                     <Text style={[styles.reservaNombre, modoOscuro && styles.reservaNombreModoOscuro]}>
                                         {item.nombre}
                                     </Text>

@@ -13,7 +13,7 @@ const DetalleRestaurante = ({ restauranteId }) => {
 
   const obtenerInformacionRestaurante = async () => {
     try {
-      const response = await fetch(`http://192.168.1.133:3000/restaurantes`);
+      const response = await fetch(`http://172.20.10.2:3000/restaurantes`);
       const restauranteData = await response.json();
       setRestaurante(restauranteData);
       setLoading(false);
@@ -25,7 +25,7 @@ const DetalleRestaurante = ({ restauranteId }) => {
 
   const obtenerReseñas = async (restauranteId) => {
     try {
-      const response = await fetch(`http://192.168.1.133:3000/reviews/${restauranteId}`);
+      const response = await fetch(`http://172.20.10.2:3000/reviews/${restauranteId}`);
       if (response.ok) {
         const data = await response.json();
         setReseñas(data);

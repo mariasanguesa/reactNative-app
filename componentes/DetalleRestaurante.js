@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView, Button  } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView, Button } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import StarRating from './StarRating';
 import ReviewForm from './ReviewForm';
@@ -7,7 +7,7 @@ import MapView, { Marker } from 'react-native-maps';
 import { useRoute } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import FavoritesContext from '../contextos/FavContext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ModoContext } from '../contextos/ModoContext';
 
 
 const DetalleRestaurante = () => {
@@ -21,27 +21,27 @@ const DetalleRestaurante = () => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const navigation = useNavigation();
 
-  
- 
+  const { modoOscuro} = useContext(ModoContext);
+
   useEffect(() => {
-    
+
     obtenerInformacionRestaurante(restauranteId);
     obtenerReseñas(restauranteId);
-    
+
   }, []);
-  
+
   const handleGoBack = () => {
     navigation.goBack();
   };
 
-  
+
   const handleAgregarReserva = () => {
     // Cambia el estado para mostrar u ocultar el formulario de reseña
     setMostrarFormulario(!mostrarFormulario);
   };
 
   const toggleFavorito = async () => {
-  
+
     if (!favorito && !isFavorite) {
       const restauranteFavorito = {
         [restaurante.id]: {
@@ -51,17 +51,17 @@ const DetalleRestaurante = () => {
       };
       addFavorite(restauranteFavorito);
     }
-  
+
     if (favorito && isFavorite) {
       removeFavorite(restauranteId);
     }
-  
+
     setFavorito(!favorito);
   };
-  
+
   const obtenerInformacionRestaurante = async (restauranteId) => {
     try {
-      const response = await fetch(`http://192.168.1.133:3000/restaurantes/${restauranteId}`);
+      const response = await fetch(`http://172.20.10.2:3000/restaurantes/${restauranteId}`);
       const restauranteData = await response.json();
       setRestaurante(restauranteData);
       setLoading(false);
@@ -73,7 +73,7 @@ const DetalleRestaurante = () => {
 
   const obtenerReseñas = async (restauranteId) => {
     try {
-      const response = await fetch(`http://192.168.1.133:3000/reviews/${restauranteId}`);
+      const response = await fetch(`http://172.20.10.2:3000/reviews/${restauranteId}`);
       if (response.ok) {
         const data = await response.json();
         setReseñas(data.reviews);
@@ -103,63 +103,63 @@ const DetalleRestaurante = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.container} >
-            <Icon name="arrow-left" size={24} onPress={handleGoBack}/>
-            <View key={restaurante.id} style={styles.restauranteContainer}>
-            <Text style={styles.nombre}>{restaurante.name}</Text>
-            <View style={styles.imageContainer}>
-              <Image source={{ uri: restaurante.image_url }} style={styles.imagen} />
-              {favorito && (
-                <Icon
-                  name={favorito ? 'heart' : 'heart-o'}
-                  size={24}
-                  color={favorito ? 'red' : 'black'}
-                  style={styles.favoriteIcon}
-                />
-              )}
-            </View>
-          <View style={styles.ratingContainer}>
-          <Text style={styles.rating}>{restaurante.rating} / 5</Text>
-          <StarRating rating={restaurante.rating} />
+    <ScrollView contentContainerStyle={[styles.container, modoOscuro && styles.containerModoOscuro]}>
+      <View style={[styles.container, modoOscuro && styles.containerModoOscuro]} >
+        <Icon name="arrow-left" color={modoOscuro ? 'white' : 'black'} size={24} onPress={handleGoBack} />
+        <View key={restaurante.id} style={styles.restauranteContainer}>
+          <Text style={[styles.nombre, modoOscuro && styles.nombreModoOscuro]}>{restaurante.name}</Text>
+          <View style={styles.imageContainer}>
+            <Image source={{ uri: restaurante.image_url }} style={styles.imagen} />
+            {favorito && (
+              <Icon
+                name={favorito ? 'heart' : 'heart-o'}
+                size={24}
+                color={favorito ? 'red' : 'black'}
+                style={styles.favoriteIcon}
+              />
+            )}
           </View>
-          <Text style={styles.direccion}>{restaurante.location.address1}</Text>
-          <Text style={styles.direccion}>{restaurante.location.city}, {restaurante.location.country}</Text>
-        <View>
-        <TouchableOpacity style={styles.buttonFav} onPress={toggleFavorito}>
-          <Text style={styles.buttonText}>
-            {favorito ? 'Quitar de Favoritos' : 'Agregar a Favoritos'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <View style={styles.ratingContainer}>
+            <Text style={styles.rating}>{restaurante.rating} / 5</Text>
+            <StarRating rating={restaurante.rating} />
+          </View>
+          <Text style={[styles.direccion, modoOscuro && styles.direccionModoOscuro]}>{restaurante.location.address1}</Text>
+          <Text style={[styles.direccion, modoOscuro && styles.direccionModoOscuro]}>{restaurante.location.city}, {restaurante.location.country}</Text>
+          <View>
+            <TouchableOpacity style={styles.buttonFav} onPress={toggleFavorito}>
+              <Text style={styles.buttonText}>
+                {favorito ? 'Quitar de Favoritos' : 'Agregar a Favoritos'}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-        {mostrarFormulario && <ReviewForm />}
-        {/* Botón para mostrar/ocultar el formulario */}
-        <TouchableOpacity style={styles.button} onPress={handleAgregarReserva}>
-          <Text style={styles.buttonText}>
-            {mostrarFormulario ? 'Cancelar Reseña' : 'Agregar Reseña'}
-          </Text>
-        </TouchableOpacity>
-         {/* Mapa */}
-         <View style={styles.mapContainer}>
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: restaurante.coordinates.latitude,
-            longitude: restaurante.coordinates.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          }}
-        >
-          <Marker coordinate={{latitude: restaurante.coordinates.latitude, longitude: restaurante.coordinates.longitude }} />
-        </MapView> 
+          {mostrarFormulario && <ReviewForm />}
+          {/* Botón para mostrar/ocultar el formulario */}
+          <TouchableOpacity style={[styles.button, modoOscuro && styles.buttonModoOscuro]} onPress={handleAgregarReserva}>
+            <Text style={[styles.buttonText, modoOscuro && styles.buttonTextModoOscuro]}>
+              {mostrarFormulario ? 'Cancelar Reseña' : 'Agregar Reseña'}
+            </Text>
+          </TouchableOpacity>
+          {/* Mapa */}
+          <View style={styles.mapContainer}>
+            <MapView
+              style={styles.map}
+              initialRegion={{
+                latitude: restaurante.coordinates.latitude,
+                longitude: restaurante.coordinates.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              }}
+            >
+              <Marker coordinate={{ latitude: restaurante.coordinates.latitude, longitude: restaurante.coordinates.longitude }} />
+            </MapView>
+          </View>
+        </View>
+        <Text style={[styles.reseñasTitulo, modoOscuro && styles.reseñasTituloModoOscuro]}>Reseñas</Text>
       </View>
-        </View>
-        <Text style={styles.nombre}>Reseñas</Text>
-        </View>
-        </ScrollView>
+    </ScrollView>
   );
-        
+
 };
 
 
@@ -169,7 +169,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 20,
     alignContent: 'center',
-    marginTop: 30
   },
   imageContainer: {
     alignItems: 'center',
@@ -198,18 +197,18 @@ const styles = StyleSheet.create({
   },
   rating: {
     fontSize: 20,
-    fontWeight: 'semi-bold',
+    fontWeight: 600,
     marginBottom: 8,
     textAlign: 'center'
   },
   direccion: {
     fontSize: 20,
-    fontWeight: 'semi-bold',
+    fontWeight: 600,
     marginBottom: 8,
   },
   ciudad: {
     fontSize: 20,
-    fontWeight: 'semi-bold',
+    fontWeight: 600,
     marginBottom: 16,
   },
   reseñasTitulo: {
@@ -243,7 +242,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  buttonFav:{
+  buttonFav: {
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 10,
@@ -276,6 +275,38 @@ const styles = StyleSheet.create({
     top: 10,
     right: 10,
   },
+  containerModoOscuro: {
+    backgroundColor: 'black'
+  },
+  nombreModoOscuro: {
+    color: 'white'
+  },
+  direccionModoOscuro: {
+    color: 'white'
+  },
+  reseñasTituloModoOscuro: {
+    color: 'white'
+  },
+  reseñasContainerModoOscuro: {
+    backgroundColor: 'black'
+  },
+  reseñaModoOscuro: {
+    color: 'white'
+  },
+  reseñaRatingModoOscuro: {
+    color: 'white'
+  },
+  reseñaTextoModoOscuro: {
+    color: 'white'
+  },
+  buttonModoOscuro: {
+    backgroundColor: '#e78cda'
+  },
+  buttonTextModoOscuro: {
+    color: 'black'
+  },
+  buttonFavModoOscuro: {
+    backgroundColor: '#d3b34f'
+  },
 });
 export default DetalleRestaurante;
-

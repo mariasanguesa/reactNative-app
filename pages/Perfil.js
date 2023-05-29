@@ -5,6 +5,7 @@ import axios from 'axios';
 import AutContext from '../contextos/AutContext';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
+import { API_KEY } from '@env';
 
 const Perfil = (props) => {
 
