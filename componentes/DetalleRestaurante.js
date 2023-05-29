@@ -9,7 +9,6 @@ import { useNavigation } from '@react-navigation/native';
 import FavoritesContext from '../contextos/FavContext';
 import { ModoContext } from '../contextos/ModoContext';
 
-
 const DetalleRestaurante = () => {
   const route = useRoute();
   const { restauranteId } = route.params;
@@ -34,28 +33,26 @@ const DetalleRestaurante = () => {
     navigation.goBack();
   };
 
-
   const handleAgregarReserva = () => {
     // Cambia el estado para mostrar u ocultar el formulario de reseña
     setMostrarFormulario(!mostrarFormulario);
   };
 
   const toggleFavorito = async () => {
-
-    if (!favorito && !isFavorite) {
-      const restauranteFavorito = {
-        [restaurante.id]: {
-          nombre: restaurante.name,
-          imagen: restaurante.image_url
-        }
-      };
-      addFavorite(restauranteFavorito);
-    }
-
-    if (favorito && isFavorite) {
+    if (!favorito) {
+      const restauranteExistente = favorites.find(fav => Object.keys(fav)[0] === restaurante.id);
+      if (!restauranteExistente) {
+        const restauranteFavorito = {
+          [restaurante.id]: {
+            nombre: restaurante.name,
+            imagen: restaurante.image_url
+          }
+        };
+        addFavorite(restauranteFavorito);
+      }
+    } else {
       removeFavorite(restauranteId);
     }
-
     setFavorito(!favorito);
   };
 

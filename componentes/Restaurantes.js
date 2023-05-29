@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Image, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView  } from 'react-native';
+import { View, Text, Image, FlatList, StyleSheet, ActivityIndicator, TouchableOpacity, ScrollView  } from 'react-native';
 
 const DetalleRestaurante = ({ restauranteId }) => {
   const [restaurantes, setRestaurante] = useState(null);
@@ -9,7 +9,6 @@ const DetalleRestaurante = ({ restauranteId }) => {
   useEffect(() => {
     obtenerInformacionRestaurante();
   }, []);
-
 
   const obtenerInformacionRestaurante = async () => {
     try {

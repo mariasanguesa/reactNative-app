@@ -24,7 +24,7 @@ export const FavoritesProvider = ({ children }) => {
   const addFavorite = async (favorite) => {
     try {
       const updatedFavorites = [...favorites, favorite];
-      setFavorites([updatedFavorites]);
+      setFavorites(updatedFavorites);
       await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
     } catch (error) {
       console.log('Error adding favorite:', error);
